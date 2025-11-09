@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pareja Retos</title>
+  <style>
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#ff6b6b,#4ecdc4);color:#fff;margin:0;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;}
+    h1{font-size:3em;text-shadow:2px 2px 10px rgba(0,0,0,0.5);}
+    .card{background:rgba(255,255,255,0.2);padding:20px;margin:20px;border-radius:20px;width:90%;max-width:500px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);backdrop-filter:blur(10px);}
+    button{background:#fff;color:#ff6b6b;padding:15px 30px;border:none;border-radius:50px;font-size:1.2em;margin:10px;cursor:pointer;box-shadow:0 5px 15px rgba(0,0,0,0.2);}
+    button:hover{transform:scale(1.05);}
+    #carta{font-size:1.4em;margin:20px 0;line-height:1.5;}
+    .nivel{color:#fff;font-weight:bold;font-size:1.3em;}
+    footer{margin-top:30px;font-size:0.9em;}
+  </style>
+</head>
+<body>
+  <h1>Pareja Retos</h1>
+  <div class="card">
+    <p class="nivel">Nivel actual: <span id="nivel">1 - Tranquilo</span></p>
+    <p id="contador">Cartas usadas: 0/25</p>
+    <div id="carta">¡Pulsa para sacar carta!</div>
+    <button onclick="sacarCarta()">Sacar Carta</button>
+    <button onclick="subirNivel()">Subir Nivel</button>
+    <button onclick="reiniciar()">Reiniciar Nivel</button>
+  </div>
+  <footer>Hecho con amor para noches inolvidables</footer>
+
+  <script>
+    const niveles = ["1 - Tranquilo", "2 - Picardía", "3 - Caliente", "4 - Atrevido"];
+    let nivelActual = 0;
+    let usadas = [];
+
+    // === 100 VERDADES (25 por nivel) ===
+    const verdades = [
+      // Nivel 1
+      "¿Qué hago que te da más risa aunque no quieras?","¿Cuál es mi olor que te calma al instante?","¿Qué canción suena en tu cabeza cuando piensas en mí?",
+      "¿Qué comida mía te parece la más graciosa de ver comer?","¿Qué foto mía miras cuando me extrañas?","¿Qué apodo secreto me pondrías?",
+      "¿En qué momento del día tienes más ganas de abrazarme?","¿Qué recuerdo nuestro te saca sonrisa boba?","¿Qué prenda mía te parece la más cómoda de robar?",
+      "¿Qué hago yo que te da vergüenza admitir que te encanta?","¿Qué mensaje mío guardaste porque te hizo feliz todo el día?","¿Qué palabra mía te hace reír aunque estés enfadado/a?",
+      "¿Qué lugar público te da ganas de darme la mano de repente?","¿Qué hago en casa que te parece adorable?","¿Qué selfie mía tienes de fondo de pantalla secreto?",
+      "¿Qué me dirías ahora mismo para hacerme sonrojar?","¿Qué parte de mi cara te da más ganas de besar?","¿Qué recuerdo tonto nuestro repetirías ya?",
+      "¿Qué me regalarías si tuvieras 10 euros y mucha imaginación?","¿Qué me dices cuando nadie nos oye que me derrite?","¿Qué hago dormido/a que te da ternura?",
+      "¿Qué plan casero conmigo te parece perfecto?","¿Qué me cocinarías para impresionarme?","¿Qué baile ridículo mío te saca carcajadas?","¿Qué me dirías ahora mismo para que sonría todo el día?",
+      // Nivel 2
+      "¿Qué parte de mi cuerpo miras cuando crees que no me doy cuenta?","¿Qué prenda mía te parece la más sexy?","¿Qué me pondrías para volverme loco/a al instante?",
+      "¿Qué beso mío te dejó con ganas de más todo el día?","¿Qué me dirías al oído para que se me erice la piel?","¿Qué zona de mi cuerpo te da más ganas de tocar despacio?",
+      "¿Qué mensaje mío te ha puesto nervioso/a en el trabajo?","¿En qué lugar público has tenido ganas de besarme fuerte?","¿Qué parte de mi voz te excita sin darte cuenta?",
+      "¿Qué me harías si estuviéramos solos en el ascensor 2 minutos?","¿Qué fantasía tonta tenemos pendiente?","¿Cuánto tiempo aguantarías sin besarme si te lo prohibo?",
+      "¿Qué me susurrarías mientras me abrazas fuerte?","¿Qué postura nunca hemos hecho y te da curiosidad?","¿Qué me dirías en la cama para ponerme a mil?",
+      "¿Qué zona de mi cuerpo te da más ganas de morder suave?","¿Qué me harías si te despierto a las 4 a.m. con ganas?","¿Qué reto me pondrías tú ahora mismo sin vergüenza?",
+      "¿Qué me harías si te digo “esta noche mando yo”?","¿Qué palabra prohibida te gustaría que te diga?","¿Qué me harías si te pillo mirándome desnudo/a en la ducha?",
+      "¿Qué zona de mi cuerpo te da más ganas de besar fuerte?","¿Qué me dirías justo cuando estés a punto de acabar?","¿Qué postura te hace sentir más conectado/a conmigo?",
+      "¿Qué deseo sexual nunca me has confesado?",
+      // Nivel 3
+      "¿Qué me harías si tuviéramos 10 minutos solos en el coche?","¿Qué zona de mi cuerpo te da más morbo tocar despacio?","¿Qué me dirías para que no pare nunca?",
+      "¿Dónde quieres que acabe hoy?","¿Qué fantasía loca tenemos pendiente?","¿Qué me harías si mañana tuviéramos todo el día solos?","¿Qué postura quieres que hagamos en la ducha?",
+      "¿Qué me pedirías que te haga ahora mismo sin pensar?","¿Qué zona de mi cuerpo te vuelve loco/a con solo rozarla?","¿Qué me dirías para que te haga el amor más lento?",
+      "¿Qué harías si te despierto con besos bajando por tu cuerpo?","¿Qué postura te hace llegar más rápido?","¿Qué me harías si te ato las manos 3 minutos?",
+      "¿Qué deseo sexual cumplirías ahora mismo sin pensarlo dos veces?","¿Qué me harías si te digo “hoy no hay límites”?","¿Qué recuerdo caliente tenemos que repetir ya?",
+      "¿Qué me pondrías para volverme loco/a al instante?","¿Qué me susurrarías mientras me penetras despacio?","¿Qué zona de mi cuerpo te da más morbo chupar despacio?",
+      "¿Qué me dirías para que te haga el amor más fuerte?","¿Qué postura te hace sentir más dominante?","¿Qué harías si te vendo los ojos y te toco sin hablar?",
+      "¿Qué me harías si mañana nadie existiera 24 h?","¿Qué deseo sexual guardas en secreto para nosotros?","¿Qué me harías si te despierto a medianoche con ganas?",
+      // Nivel 4
+      "¿Qué postura nunca hemos hecho y te muere por probar?","¿Qué harías si tuviéramos una habitación de hotel 24 h?","¿Qué me pedirías que te haga en la cocina ahora mismo?",
+      "¿Qué fantasía tenemos que grabar solo para nosotros?","¿Qué me harías si te digo “tienes 15 minutos para hacerme acabar”?","¿Qué zona de mi cuerpo te da más morbo chupar fuerte?",
+      "¿Qué me dirías para que te haga el amor toda la noche?","¿Qué postura quieres que hagamos contra la pared?","¿Qué me harías si te despierto con la boca en tus partes íntimas?",
+      "¿Qué deseo sexual cumplirías ahora mismo sin decir que no?","¿Qué me harías si te digo “esta noche no hay reglas”?","¿Qué posición te hace acabar más fuerte?",
+      "¿Qué me pedirías que nunca te he hecho?","¿Qué harías si mañana podemos hacer lo que queramos todo el día?","¿Qué me dirías justo cuando estés dentro de mí?",
+      "¿Qué zona de mi cuerpo te da más ganas de no parar nunca?","¿Qué me harías si te ato y te vendo los ojos 10 minutos?","¿Qué postura quieres que hagamos en el coche algún día?",
+      "¿Qué me harías si nadie nos ve nunca más?","¿Qué deseo sexual guardas para un día especial?","¿Qué me dirías para que no pare hasta que acabemos los dos?",
+      "¿Qué posición quieres que hagamos ahora mismo sin pensar?","¿Qué me harías si te digo “tienes vía libre total”?","¿Qué fantasía loca cumplirías esta misma noche?",
+      "¿Qué me dirías ahora mismo para que no pueda esperar más?"
+    ];
+
+    // === 100 RETOS (25 por nivel) ===
+    const retos = [
+      // Nivel 1
+      "Canta 15 segundos de tu canción más vergonzosa.","Haz 20 sentadillas diciendo “te quiero” en cada una.","Abraza a tu pareja 45 segundos sin hablar.",
+      "Quítate los zapatos.","Haz cosquillas a tu pareja en la barriga 20 segundos.","Graba un audio imitando la risa de tu pareja.",
+      "Haz 10 flexiones diciendo el nombre de tu pareja al bajar.","Besa la mejilla de tu pareja 10 veces seguidas.","Toma un vaso de agua.",
+      "Masajea los hombros de tu pareja 1 minuto.","Siéntate en el regazo de tu pareja 40 segundos sin moverte.","Masajea la nuca de tu pareja 1 minuto.",
+      "Besa la frente de tu pareja 7 veces.","Cuéntale a tu pareja tu peor chiste.","Quítate tú los calcetines lanzándolos al aire.",
+      "Coge la mano de tu pareja y mírala a los ojos 30 segundos sin hablar.","Susurra al oído de tu pareja tu comida favorita.","Besa la mano de tu pareja como príncipe/princesa.",
+      "Besa a tu pareja donde mas te guste menos la boca.","Haz un cumplido cantado a tu pareja 5 segundos.","Graba un audio diciendo por qué tu pareja es genial.",
+      "Besa la nariz de tu pareja 5 veces.","Masajea los muslos de tu pareja durante 40 segundos.","Abraza a tu pareja por detrás 30 segundos.","Di “te quiero” a tu pareja en 5 idiomas distintos.",
+      // Nivel 2
+      "Besa el cuello de tu pareja 30 segundos sin usar manos.","Quítate tú una prenda.","Masajea los muslos de tu pareja 90 segundos.",
+      "Besa a tu pareja apasionadamente.","Quítale a tu pareja una prenda con la boca.","Frota tu espalda contra el pecho de tu pareja 40 segundos.",
+      "Susurra al oído de tu pareja lo que quieres hacerle esta noche.","Besa el pecho de tu pareja 40 segundos.","Quítate tú todo menos la ropa interior.",
+      "Toca a tu pareja por encima de la ropa interior 90 segundos suave.","Siéntate encima de tu pareja y muévete 40 segundos sin penetración.","Besa todo el torso de tu pareja 90 segundos sin saltarte nada.",
+      "Quítale a tu pareja la ropa interior.","Masturba a tu pareja despacio 90 segundos mirándole a los ojos.","Frota tus partes íntimas contra las de tu pareja 40 segundos sin penetración.",
+      "Besa el ombligo de tu pareja 30 segundos.","Quítate tú lo último que te queda puesto.","Haz un masaje sensual en la espalda de tu pareja 2 minutos.",
+      "Besa la parte interna del muslo de tu pareja 30 segundos cada lado.","Deja que tu pareja te toque por encima 90 segundos donde quiera.","Susurra una fantasía a tu pareja mientras le abrazas desnudo/a.",
+      "Haz cosquillas suaves en la cintura de tu pareja 30 segundos.","Besa la clavícula de tu pareja 40 segundos sin parar.","Toca directamente la piel de tu pareja 90 segundos donde te diga.",
+      "Quédate desnudo/a encima de tu pareja 1 minuto sin moverte.",
+      // Nivel 3
+      "Realiza sexo oral suave a tu pareja 90 segundos sin parar.","Deja que tu pareja te realice sexo oral 90 segundos completo.","Penetra a tu pareja en misionero lento 2 minutos y para.",
+      "Realiza sexo oral profundo a tu pareja 90 segundos.","Penetra a tu pareja en perrito suave 90 segundos y para.","Deja que tu pareja te realice sexo oral hasta que digas “más rápido”.",
+      "Penetra a tu pareja de lado (cuchara) 2 minutos abrazados.","Realiza sexo oral a tu pareja mientras le miras a los ojos 2 minutos.","Deja que tu pareja te penetre encima (vaquera) 2 minutos suave.",
+      "Deja que tu pareja te realice sexo oral profundo 3 minutos.","Penetra a tu pareja contra la pared 2 minutos sin soltarle las manos.","Realiza sexo oral a tu pareja hasta que esté a punto (máx 4 min).",
+      "Penetra a tu pareja en el sofá en la posición que elija 3 minutos.","Deja que tu pareja te realice sexo oral hasta que acabes temblando.","Penetra a tu pareja en misionero lento y profundo 4 minutos mirándoos.",
+      "Realiza sexo oral + besos en el cuello a tu pareja 3 minutos.","Deja que tu pareja te penetre en vaquera inversa 2 minutos fuerte.","Deja que tu pareja te realice sexo oral en la ducha 4 minutos.",
+      "Penetra a tu pareja en perrito contra la mesa 3 minutos.","Realiza sexo oral a tu pareja hasta que acabe en tu boca.","Penetra a tu pareja en la cocina encima de la encimera 4 minutos.",
+      "Deja que tu pareja te realice sexo oral mientras os abrazáis fuerte 4 minutos.","Penetra a tu pareja en la posición del loto 4 minutos sin parar.","Realiza sexo oral lento a tu pareja hasta que te diga “más rápido”.",
+      "Penetra a tu pareja en misionero con las piernas en alto 4 minutos.",
+      // Nivel 4
+      "Penetra a tu pareja en la silla (tú sentado/a, tu pareja encima) 4 minutos.","Haz el amor lento a tu pareja en la alfombra 5 minutos sin parar.","Penetra a tu pareja de pie contra la puerta 3 minutos.",
+      "Deja que tu pareja te realice sexo oral hasta el segundo orgasmo.","Penetra a tu pareja en la bañera 5 minutos.","Realiza sexo oral + mano suave a tu pareja 4 minutos.",
+      "Deja que tu pareja te penetre en vaquera lenta y profunda 5 minutos.","Deja que tu pareja te realice sexo oral en la cama boca arriba 5 minutos.","Penetra a tu pareja en perrito suave 3 minutos y fuerte 2 minutos.",
+      "Realiza sexo oral a tu pareja hasta que acabe dos veces seguidas.","Penetra a tu pareja en la posición del puente 4 minutos.","Deja que tu pareja te realice sexo oral mientras le abrazas la cabeza 5 minutos.",
+      "Penetra a tu pareja en misionero mirándoos a los ojos 6 minutos.","Haz el amor a tu pareja en la posición que más te guste 6 minutos.","Penetra a tu pareja donde te diga ahora mismo 6 minutos.",
+      "Deja que tu pareja te realice sexo oral hasta que no puedas más.","Penetra fuerte a tu pareja en la posición que elija 7 minutos seguidos.","Realiza sexo oral a tu pareja hasta que te pida que pares (sin límite).",
+      "Penetra a tu pareja hasta que los dos acabéis al mismo tiempo.","Haz el amor a tu pareja en el suelo del salón 8 minutos sin parar.","Penetra a tu pareja en la encimera del baño 5 minutos.",
+      "Deja que tu pareja te realice sexo oral + mano hasta que acabes fuerte.","Penetra a tu pareja en la posición que nunca habéis hecho 6 minutos.","Haz el amor a tu pareja toda la noche sin parar cuando diga.",
+      "Cumple cualquier deseo sexual que tu pareja te pida ahora mismo sin decir que no."
+    ];
+
+    function sacarCarta() {
+      if (usadas.length >= 25) {
+        // ¡AUTOMÁTICO! Sube de nivel cuando llegues a 25
+        if (nivelActual < 3) {
+          nivelActual++;
+          usadas = [];
+          document.getElementById("nivel").textContent = niveles[nivelActual];
+          document.getElementById("contador").textContent = "Cartas usadas: 0/25";
+          document.getElementById("carta").innerHTML = `<strong>¡Nivel ${nivelActual + 1} desbloqueado!</strong><br>¡Esto se pone MUY caliente!`;
+          return;
+        } else {
+          document.getElementById("carta").innerHTML = "<strong>¡ENHORABUENA!</strong><br>¡Habéis completado los 4 niveles! 🔥<br>Ahora… ¡a cumplir todo lo que queda!";
+          return;
+        }
+      }
+
+      const esVerdad = Math.random() < 0.5;
+      const inicio = nivelActual * 25;
+      const cartas = esVerdad ? verdades : retos;
+      let indice;
+      do {
+        indice = Math.floor(Math.random() * 25);
+      } while (usadas.includes(indice));
+      usadas.push(indice);
+
+      const texto = cartas[inicio + indice];
+      document.getElementById("carta").innerHTML = `<strong>${esVerdad?"VERDAD":"RETO"}:</strong><br>${texto}`;
+      document.getElementById("contador").textContent = `Cartas usadas: ${usadas.length}/25`;
+    }
+
+    function subirNivel() {
+      if (nivelActual < 3) {
+        nivelActual++;
+        usadas = [];
+        document.getElementById("nivel").textContent = niveles[nivelActual];
+        document.getElementById("contador").textContent = "Cartas usadas: 0/25";
+        document.getElementById("carta").innerHTML = "¡Nivel subido manualmente! ¡Prepárate!";
+      } else {
+        alert("¡Ya estás en el nivel MÁXIMO!");
+      }
+    }
+
+    function reiniciar() {
+      usadas = [];
+      document.getElementById("contador").textContent = "Cartas usadas: 0/25";
+      document.getElementById("carta").innerHTML = "¡Nivel reiniciado! Listo para más";
+    }
+  </script>
+</body>
+</html>
