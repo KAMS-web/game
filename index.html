@@ -3,35 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pareja Retos - Futuro y Pasado</title>
+  <title>Pareja Retos + Castigos</title>
   <style>
-    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#a18cd1,#fbc2eb);color:#fff;margin:0;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;}
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#ff6b9d,#c44569);color:#fff;margin:0;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;}
     h1{font-size:3em;text-shadow:2px 2px 10px rgba(0,0,0,0.5);}
     .card{background:rgba(255,255,255,0.25);padding:30px;border-radius:20px;width:90%;max-width:520px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.4);backdrop-filter:blur(10px);}
-    button{background:#fff;color:#a18cd1;padding:16px 32px;border:none;border-radius:50px;font-size:1.3em;margin:12px;cursor:pointer;}
+    button{background:#fff;color:#c44569;padding:16px 32px;border:none;border-radius:50px;font-size:1.3em;margin:12px;cursor:pointer;}
     button:hover{transform:scale(1.05);}
     #carta{font-size:1.4em;margin:25px 0;line-height:1.7;}
+    .castigo-btn{background:#ff4757;color:#fff;display:none;}
     footer{margin-top:40px;font-size:0.9em;}
   </style>
 </head>
 <body>
-  <h1>Pareja Retos</h1>
+  <h1>Pareja Retos + Castigos</h1>
   <div class="card">
     <p style="font-size:1.5em;font-weight:bold;">Nivel: <span id="nivel">1 - Mimos con ropa</span></p>
     <p id="contador">Cartas usadas: 0/25</p>
-    <div id="carta">¡Empezamos con calma y mucho amor!</div>
+    <div id="carta">¡Empezamos con calma y recuerdos!</div>
     <button onclick="sacarCarta()">Sacar Carta</button>
+    <button class="castigo-btn" id="castigoBtn" onclick="aplicarCastigo()">¡NO CUMPLIÓ! CASTIGO</button>
     <button onclick="subirNivel()">Subir Nivel</button>
     <button onclick="reiniciar()">Reiniciar</button>
   </div>
-  <footer>Planes, sueños y recuerdos para siempre 💜</footer>
+  <footer>¡Sin excusas! ¡Cumple o sufre! 🔥</footer>
 
   <script>
     const niveles = ["1 - Mimos con ropa", "2 - Besos largos y caricias", "3 - Desnudo y masturbación", "4 - Fuego total"];
     let nivelActual = 0;
     let usadas = [];
+    let ultimaCartaEsReto = false;
 
-    // 100 VERDADES NUEVAS: PASADO, FUTURO, PLANES, SUEÑOS + TOQUE PICANTE SUAVE
+    // === 100 VERDADES – 25 POR NIVEL ===
     const verdades = [
       // PASADO
       "¿Cuál fue el primer pensamiento cuando me viste por primera vez?",
@@ -110,12 +113,39 @@
       "¿Qué me harías si tuviéramos 10 minutos solos en el coche?",
       "¿Qué zona mía te da más morbo tocar despacio?",
       "¿Qué me dirías para que no pare nunca?",
-      "¿Dónde quieres que acabe hoy?"
+      "¿Dónde quieres que acabe hoy?",
+      
+      // === NIVEL 4: PICANTE + FUTURO SEXUAL ===
+      "¿Qué fantasía loca cumpliríamos en nuestra luna de miel?",
+      "¿Qué posición probaríamos en nuestra primera noche en la nueva casa?",
+      "¿Dónde me harías el amor por primera vez en nuestra futura terraza?",
+      "¿Qué juguete compraríamos para nuestra noche de aniversario?",
+      "¿Qué me harías en el coche durante nuestro viaje soñado?",
+      "¿Qué postura dominaríamos en 10 años de práctica?",
+      "¿Qué me susurrarías mientras me atas en nuestra cama nueva?",
+      "¿Qué deseo sexual cumplirías en nuestra casa de playa?",
+      "¿Qué me harías si tuviéramos una noche entera en un hotel 5 estrellas?",
+      "¿Qué zona mía besarías primero en nuestra boda?",
+      "¿Qué me harías en el avión rumbo a nuestra luna de miel?",
+      "¿Qué posición inventaríamos y le pondríamos nuestro nombre?",
+      "¿Qué me harías si nos pillan en nuestra futura piscina?",
+      "¿Qué fantasía grabaríamos solo para nosotros en 20 años?",
+      "¿Qué me harías en la ducha de nuestra casa soñada?",
+      "¿Qué me dirías mientras acabamos juntos en el sofá nuevo?",
+      "¿Qué me harías si tuviéramos una habitación con espejos?",
+      "¿Qué postura haríamos en el balcón de nuestro futuro ático?",
+      "¿Qué me harías si tuviéramos un fin de semana sin salir de la cama?",
+      "¿Qué me susurrarías mientras me penetras en nuestra hamaca?",
+      "¿Qué deseo sexual guardarías para nuestro 10º aniversario?",
+      "¿Qué me harías en la cocina de nuestra casa definitiva?",
+      "¿Qué me dirías justo antes de acabar en nuestra cama king size?",
+      "¿Qué me harías si tuviéramos un jacuzzi privado?",
+      "¿Qué me prometerías sexualmente para toda la vida?"
     ];
 
-    // 100 RETOS (igual que la versión anterior – nivel 1 y 2 con ropa, 3 desnudo, 4 fuego)
+    // === 100 RETOS – 25 POR NIVEL ===
     const retos = [
-      // Nivel 1 - Mimos con ropa
+     // Nivel 1 - Mimos con ropa
       "Abraza a tu pareja 1 minuto fuerte sin hablar.","Bésale la frente 3 veces muy despacio.","Mírale a los ojos 20 segundos sin reírte.",
       "Dile “te quiero” susurrando al oído.","Canta 10 segundos de una canción cursi mirándole.","Hazle cosquillas suaves en la barriga 20 segundos.",
       "Bésale la mejilla 5 veces rapidito.","Masajea sus hombros 2 minutos con ropa.","Siéntate en su regazo 20 segundos sin moverte.",
@@ -157,6 +187,117 @@
       "Cumple cualquier deseo sexual que te pida ahora mismo sin decir que no."
     ];
 
+    // === 100 CASTIGOS – 25 POR NIVEL (SOLO DEL NIVEL ACTUAL) ===
+    const castigos = [
+      // NIVEL 1 – TIERNO Y GRACIOSO
+      "Canta una canción infantil desafinando todo lo que puedas.",
+      "Imita a un animal durante 5 segundos (elección de la pareja).",
+      "Di 5 piropos a tu pareja.",
+      "Baila como un pato 5 segundos.",
+      "Haz 10 sentadillas.",
+      "Cuenta un chiste malo y ríete solo.",
+      "Imita a tu pareja cuando se enfada.",
+      "Di “te quiero” en 5 idiomas inventados.",
+      "Haz 5 flexiones con la pareja encima (si puede).",
+      "Lame tu codo (imposible) 5 segundos.",
+      "Haz un dibujo feo de tu pareja en 30 segundos.",
+      "Di el abecedario al revés sin fallar.",
+      "Besa el pie de tu pareja (con calcetín).",
+      "Haz 10 abdominales.",
+      "Imita a un bebé llorando 5 segundos.",
+      "Di un cumplido a tu pareja en voz de robot.",
+      "Corre en el sitio 30 segundos.",
+      "Haz una mueca fea 5 segundos.",
+      "Canta el himno nacional (o inventa uno).",
+      "Di “perdón” 3 veces.",
+      "Haz 5 volteretas (o intenta).",
+      "Baila la Macarena 10 segundos.",
+      "Imita a un político hablando 15 segundos.",
+      "Di “te amo” en 5 tonos diferentes.",
+      "Haz 5 saltos de rana.",
+
+      // NIVEL 2 – PICARDÍA SUAVE
+      "Besa el cuello de tu pareja 60 segundos sin parar.",
+      "Masajea los pies de tu pareja 2 minutos.",
+      "Quítate 1 prenda (superior o inferior).",
+      "Besa la mano de tu pareja como en las películas.",
+      "Susurra al oído “te deseo”.",
+      "Haz un masaje en la espalda 3 minutos.",
+      "Besa la frente 5 veces despacio.",
+      "Siéntate en el regazo de tu pareja 2 minutos.",
+      "Frota tu nariz contra la suya 60 segundos.",
+      "Besa el lóbulo de la oreja 60 segundos.",
+      "Masajea los brazos 2 minutos.",
+      "Besa la clavícula 60 segundos.",
+      "Haz un baile sensual con ropa 30 segundos.",
+      "Susurra una fantasía suave al oído.",
+      "Besa la mejilla 20 veces.",
+      "Masajea el cuero cabelludo 2 minutos.",
+      "Frota tu mejilla contra la suya 90 segundos.",
+      "Besa la muñeca 15 veces.",
+      "Haz un cumplido sexy sin tocar.",
+      "Besa el ombligo por encima de la ropa 60 segundos.",
+      "Masajea los muslos por encima 2 minutos.",
+      "Besa la espalda por encima 10 segundos.",
+      "Frota tu cuerpo contra el suyo con ropa 60 segundos.",
+      "Besa la oreja de tu pareja susurrando “te quiero”.",
+      "Masajea la cintura por encima 2 minutos.",
+
+      // NIVEL 3 – CALIENTE
+      "Quítate toda la ropa lentamente.",
+      "Masturba a tu pareja 3 minutos sin parar.",
+      "Deja que tu pareja te masturbe 3 minutos.",
+      "Besa sus partes íntimas por encima 60 segundos.",
+      "Frota tus partes desnudas contra las suyas 1 minutos.",
+      "Realiza sexo oral a tu pareja 2 minutos.",
+      "Masturbaos mutuamente 4 minutos.",
+      "Besa todo el cuerpo desnudo 2 minutos.",
+      "Quitate la prenda que elija tu pareja.",
+      "Masturba a tu pareja 2 minutos.",
+      "Deja que te masturben 1 minuto.",
+      "Frota sin penetración 5 minutos.",
+      "Besa el cuello mientras os tocáis 3 minutos.",
+      "Masturba en la ducha 4 minutos.",
+      "Quédate desnudo/a encima 3 minutos.",
+      "Besa las partes íntimas directamente 30 segundos.",
+      "Masturba a tu pareja 4 minutos.",
+      "Frota en posición del loto 2 minutos.",
+      "Besa mientras os masturbáis 3 minutos.",
+      "Masturba durante 2 minutos a tu pareja.",
+      "Realiza sexo oral a tu pareja 2 minutos.",
+      "Frota contra la pared desnudos 3 minutos.",
+      "Masturbaos 3 minutos.",
+      "Besa todo el torso desnudo 4 minutos.",
+      "Masturba fuerte 3 minutos.",
+
+      // NIVEL 4 – FUEGO TOTAL
+      "Tengan relaciones 5 minutos en la posición que elija tu pareja.",
+      "Realiza sexo oral Durante 5 minutosa tu pareja.",
+      "Tengan relaciones 5 minutos en el lugar que quiera tu pareja.",
+      "Hagan el amor en el suelo 6 minutos.",
+      "Realiza sexo oral + mano Durante 4 minutos.",
+      "Tengan relaciones contra la pared 5 minutos.",
+      "Hagan el amor en la ducha 7 minutos.",
+      "Realiza sexo oral a tu pareja durante 7 minutos.",
+      "Tengan relaciones en vaquera inversa 6 minutos.",
+      "Hagan el amor en la cocina 7 minutos.",
+      "Realiza sexo oral en el sofá durante 3 minutos.",
+      "Tengan relaciones en misionero 6 minutos.",
+      "Deja que te realice oral 5 minutos.",
+      "Hagan el amor en el balcón (o simulado) 7 minutos.",
+      "Tengan relaciones en perrito 6 minutos.",
+      "Realiza sexo oral + masturbación durante 3 minutos.",
+      "Tengan relaciones en la bañera 7 minutos.",
+      "Hagan el amor en la posición prohibida 8 minutos.",
+      "Realiza sexo oral hasta que pida parar.",
+      "Tengan relaciones donde diga tu pareja ahora mismo 8 minutos.",
+      "Hagan el amor toda la noche sin parar.",
+      "Cumple cualquier deseo sexual ahora mismo.",
+      "Tengan relaciones durante 10 minutos.",
+      "Realiza sexo oral en la cocina 5 minutos.",
+      "Hagan el amor hasta el amanecer."
+    ];
+
     function sacarCarta() {
       if (usadas.length >= 25) { subirNivel(); return; }
       const esVerdad = Math.random() < 0.5;
@@ -166,8 +307,22 @@
       do { i = Math.floor(Math.random() * 25); } while (usadas.includes(i));
       usadas.push(i);
       const texto = cartas[inicio + i];
+      ultimaCartaEsReto = !esVerdad;
+
       document.getElementById("carta").innerHTML = `<strong>${esVerdad?"VERDAD":"RETO"}:</strong><br>${texto}`;
       document.getElementById("contador").textContent = `Cartas usadas: ${usadas.length}/25`;
+
+      const castigoBtn = document.getElementById("castigoBtn");
+      castigoBtn.style.display = esVerdad ? "none" : "inline-block";
+    }
+
+    function aplicarCastigo() {
+      const inicio = nivelActual * 25;
+      let i;
+      do { i = Math.floor(Math.random() * 25); } while (usadas.includes(i)); // evita repetir
+      const castigo = castigos[inicio + i];
+      document.getElementById("carta").innerHTML = `<strong>CASTIGO NIVEL ${nivelActual + 1}:</strong><br>${castigo}`;
+      document.getElementById("castigoBtn").style.display = "none";
     }
 
     function subirNivel() {
@@ -176,16 +331,18 @@
         usadas = [];
         document.getElementById("nivel").textContent = niveles[nivelActual];
         document.getElementById("contador").textContent = "Cartas usadas: 0/25";
-        document.getElementById("carta").innerHTML = `<strong>¡Nivel ${nivelActual+1}!</strong><br>¡Esto se calienta de verdad!`;
+        document.getElementById("carta").innerHTML = `<strong>¡NIVEL ${nivelActual+1}!</strong><br>¡Subiendo la temperatura!`;
+        document.getElementById("castigoBtn").style.display = "none";
       } else {
-        document.getElementById("carta").innerHTML = "<strong>¡ENHORABUENA!</strong><br>¡Habéis completado los 4 niveles! Ahora… ¡a cumplir todo lo que queda!";
+        document.getElementById("carta").innerHTML = "<strong>¡JUEGO COMPLETADO!</strong><br>¡Ahora a cumplir TODO lo que quedó pendiente!";
       }
     }
 
     function reiniciar() {
       usadas = [];
       document.getElementById("contador").textContent = "Cartas usadas: 0/25";
-      document.getElementById("carta").innerHTML = "¡Nivel reiniciado! Listo para más";
+      document.getElementById("carta").innerHTML = "¡Reiniciado! Volvemos a empezar";
+      document.getElementById("castigoBtn").style.display = "none";
     }
   </script>
 </body>
