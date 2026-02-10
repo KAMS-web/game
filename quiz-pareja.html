@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>❓ Quiz de Pareja - ¿Cuánto me conoces?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        header {
+            text-align: center;
+            margin: 40px 0 40px;
+            text-shadow: 0 0 20px #00ff9d;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .quiz-container {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 157, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .level-info {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #00ff9d;
+        }
+
+        .counter {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        #pregunta {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            min-height: 100px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            border: 1px dashed #00ff9d;
+        }
+
+        #turno-info {
+            font-size: 1.3rem;
+            margin: 20px 0;
+            color: #ff00de;
+            font-weight: bold;
+        }
+
+        .input-box {
+            margin: 15px 0;
+        }
+
+        input {
+            padding: 12px;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1.1rem;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: #00ff9d;
+            color: #000;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #00ff9d;
+        }
+
+        .reveal-btn {
+            background: #ff0066;
+            color: #fff;
+        }
+
+        .castigo-options {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .castigo-options button {
+            background: #ff4757;
+            margin: 10px;
+            padding: 12px 25px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #00ff9d;
+            color: #000;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            background: #33ffad;
+        }
+
+        footer {
+            margin-top: 60px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        .modal {
+            display: flex;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1a0033;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 40px #00ff9d;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: #00ff9d;
+        }
+
+        .modal h2 {
+            color: #00ff9d;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .modal p {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html"><button class="back-btn">← Volver al menú</button></a>
+
+    <header>
+        <h1>❓ Quiz de Pareja</h1>
+        <p class="subtitle">¿Cuánto me conoces? Si acertamos… premio. Si fallamos… castigo 😏</p>
+    </header>
+
+    <div class="quiz-container">
+        <p class="level-info">Nivel: <span id="nivel">1 – Preguntas inocentes</span></p>
+        <p class="counter" id="contador">Preguntas respondidas: 0/25</p>
+        <div id="turno-info">Turno de Jugador 1</div>
+        <div id="pregunta">Pulsa para sacar pregunta</div>
+        <div id="respuestas" style="display:none;">
+            <p><strong>Jugador 1:</strong> <span id="resp1">-</span></p>
+            <p><strong>Jugador 2:</strong> <span id="resp2">-</span></p>
+            <p id="resultado" style="font-size:1.5rem;font-weight:bold;margin-top:20px;"></p>
+        </div>
+        <div id="castigo-options" class="castigo-options">
+            <p style="font-size:1.3rem;margin-bottom:15px;">¡Fallaron! Elige uno de estos castigos:</p>
+            <button id="castigo1" onclick="elegirCastigo(0)"></button>
+            <button id="castigo2" onclick="elegirCastigo(1)"></button>
+        </div>
+        <div class="input-box">
+            <input type="text" id="respuestaInput" placeholder="Escribe tu respuesta aquí..." />
+        </div>
+        <div class="buttons">
+            <button onclick="sacarPregunta()">Sacar Pregunta</button>
+            <button onclick="guardarRespuesta()">Guardar mi respuesta</button>
+            <button class="reveal-btn" onclick="mostrarResultado()">Revelar y comparar</button>
+            <button onclick="subirNivel()">Subir Nivel</button>
+            <button onclick="reiniciar()">Reiniciar</button>
+        </div>
+    </div>
+
+    <footer>Hecho con 🔥 para parejas que se conocen… o quieren conocerse más</footer>
+
+    <!-- Modal de explicación al entrar -->
+    <div class="modal" id="tutorialModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTutorial()">×</span>
+            <h2>¿Cómo jugar al Quiz de Pareja?</h2>
+            <p>1. Pulsa "Sacar Pregunta" para obtener una pregunta sobre uno de los dos.</p>
+            <p>2. Cada uno responde por escrito en secreto (en el campo de texto).</p>
+            <p>3. Pulsa "Guardar mi respuesta" después de escribir (turno por turno).</p>
+            <p>4. Cuando ambos hayan respondido, pulsa "Revelar y comparar".</p>
+            <p>5. Si coinciden → premio sexy (beso, caricia o reto suave).</p>
+            <p>6. Si no coinciden → aparecen 2 castigos para elegir uno y cumplirlo.</p>
+            <p>¿Listos para descubrir cuánto se conocen? Pulsa la X y empieza 😏</p>
+        </div>
+    </div>
+
+    <script>
+        const niveles = [
+            "1 – Preguntas inocentes",
+            "2 – Preguntas personales",
+            "3 – Preguntas íntimas",
+            "4 – Preguntas muy hot"
+        ];
+        let nivelActual = 0;
+        let preguntasUsadas = [];
+        let turnoJugador = 1; // 1 o 2
+        let respuestas = { jugador1: "", jugador2: "" };
+        let preguntaActual = "";
+
+        // === 100 PREGUNTAS – 25 por nivel ===
+        const preguntas = [
+            // Nivel 1 – Inocentes
+            "¿Cuál es mi comida favorita?",
+            "¿Qué color me gusta más para vestir?",
+            "¿Qué serie estoy viendo ahora mismo?",
+            "¿Cuál es mi película favorita de todos los tiempos?",
+            "¿Qué animal me da más ternura?",
+            "¿Qué estación del año prefiero?",
+            "¿Cuál es mi superhéroe favorito?",
+            "¿Qué canción me pone de buen humor?",
+            "¿Qué ciudad me gustaría visitar contigo?",
+            "¿Qué postre no puedo resistir?",
+            "¿Qué deporte me gusta ver (o practicar)?",
+            "¿Cuál es mi número de la suerte?",
+            "¿Qué libro me marcó de pequeño/a?",
+            "¿Qué juguete tenía de niño/a?",
+            "¿Qué me hace reír sin control?",
+            "¿Qué marca de ropa me gusta más?",
+            "¿Qué bebida siempre pido en un bar?",
+            "¿Qué emoji uso más?",
+            "¿Qué me da miedo de pequeño/a?",
+            "¿Qué sueño tenía de pequeño/a?",
+            "¿Qué apodo me ponían en el colegio?",
+            "¿Qué comida odiaba de niño/a?",
+            "¿Qué foto mía de pequeño/a te encanta?",
+            "¿Qué juego de mesa ganaba siempre?",
+            "¿Qué me hacía feliz de niño/a?",
+
+            // Nivel 2 – Personales
+            "¿Cuál fue mi primer beso y con quién?",
+            "¿Qué miedo tengo ahora que no tenía de pequeño/a?",
+            "¿Qué sueño tengo para los próximos 5 años?",
+            "¿Qué recuerdo nuestro te hace sonreír?",
+            "¿Qué canción te recuerda a mí?",
+            "¿Qué prenda mía te robarías?",
+            "¿Qué lugar público te da ganas de besarme?",
+            "¿Qué mensaje mío guardaste porque te hizo feliz?",
+            "¿Qué foto mía tienes de fondo de pantalla secreto?",
+            "¿Qué apodo secreto me pondrías?",
+            "¿Qué me dirías ahora mismo para hacerme sonrojar?",
+            "¿Qué recuerdo tonto nuestro repetirías?",
+            "¿Qué me regalarías con 10 euros y mucha imaginación?",
+            "¿Qué me dices cuando nadie nos oye?",
+            "¿Qué hago dormido/a que te da ternura?",
+            "¿Qué plan casero conmigo te parece perfecto?",
+            "¿Qué me cocinarías para impresionarme?",
+            "¿Qué baile ridículo mío te saca carcajadas?",
+            "¿Qué me dirías para que sonría todo el día?",
+            "¿Qué parte de mi cuerpo miras cuando crees que no me doy cuenta?",
+            "¿Qué prenda mía te parece la más sexy?",
+            "¿Qué me pondrías para volverme loco/a?",
+            "¿Qué beso mío te dejó con ganas de más?",
+            "¿Qué me dirías al oído para erizarme la piel?",
+            "¿Qué zona mía te da ganas de tocar despacio?",
+
+            // Nivel 3 – Íntimas
+            "¿Qué zona mía te da más morbo tocar despacio?",
+            "¿Qué me dirías para que no pare nunca?",
+            "¿Dónde quieres que acabe hoy?",
+            "¿Qué fantasía loca tenemos pendiente?",
+            "¿Qué postura quieres que hagamos en la ducha?",
+            "¿Qué me pedirías que te haga ahora mismo?",
+            "¿Qué zona mía te vuelve loco/a con solo rozarla?",
+            "¿Qué me dirías para que te haga el amor más lento?",
+            "¿Qué postura te hace llegar más rápido?",
+            "¿Qué me harías si te ato las manos?",
+            "¿Qué deseo sexual cumplirías ahora mismo?",
+            "¿Qué me harías si te digo “hoy no hay límites”?",
+            "¿Qué recuerdo caliente nuestro repetirías ya?",
+            "¿Qué me pondrías para volverme loco/a?",
+            "¿Qué me susurrarías mientras me penetras despacio?",
+            "¿Qué zona mía te da más morbo chupar despacio?",
+            "¿Qué me dirías para que te haga el amor más fuerte?",
+            "¿Qué postura te hace sentir más dominante?",
+            "¿Qué harías si te vendo los ojos?",
+            "¿Qué me harías si mañana nadie existiera 24 h?",
+            "¿Qué deseo sexual guardas en secreto para nosotros?",
+            "¿Qué me harías si te despierto a medianoche con ganas?",
+            "¿Qué postura nunca hemos hecho y te muere por probar?",
+            "¿Qué harías si tuviéramos una habitación de hotel 24 h?",
+            "¿Qué me pedirías que te haga en la cocina ahora mismo?",
+
+            // Nivel 4 – Muy hot
+            "¿Qué fantasía tenemos que grabar solo para nosotros?",
+            "¿Qué me harías si te digo “tienes 15 minutos para hacerme acabar”?",
+            "¿Qué zona mía te da más morbo chupar fuerte?",
+            "¿Qué me dirías para que te haga el amor toda la noche?",
+            "¿Qué postura quieres que hagamos contra la pared?",
+            "¿Qué me harías si te despierto con la boca en tus partes íntimas?",
+            "¿Qué deseo sexual cumplirías ahora mismo sin decir que no?",
+            "¿Qué me harías si te digo “esta noche no hay reglas”?",
+            "¿Qué posición te hace acabar más fuerte?",
+            "¿Qué me pedirías que nunca te he hecho?",
+            "¿Qué harías si mañana podemos hacer lo que queramos todo el día?",
+            "¿Qué me dirías justo cuando estés dentro de mí?",
+            "¿Qué zona mía te da más ganas de no parar nunca?",
+            "¿Qué me harías si te ato y te vendo los ojos 10 minutos?",
+            "¿Qué postura quieres que hagamos en el coche algún día?",
+            "¿Qué me harías si nadie nos ve nunca más?",
+            "¿Qué deseo sexual guardas para un día especial?",
+            "¿Qué me dirías para que no pare hasta que acabemos los dos?",
+            "¿Qué posición quieres que hagamos ahora mismo sin pensar?",
+            "¿Qué me harías si te digo “tienes vía libre total”?",
+            "¿Qué fantasía loca cumplirías esta misma noche?",
+            "¿Qué me dirías ahora mismo para que no pueda esperar más?",
+            "¿Qué me harías si te despierto con la boca en tus partes íntimas?",
+            "¿Qué deseo sexual cumplirías ahora mismo sin decir que no?",
+            "¿Qué me harías si te digo “esta noche no hay reglas”?"
+        ];
+
+        // === CASTIGOS (100 – 25 por nivel) ===
+        const castigos = [
+            // Nivel 1 – Tierno y gracioso
+            "Canta una canción infantil desafinando todo lo que puedas.",
+            "Imita a un animal durante 30 segundos (la pareja elige cuál).",
+            "Di 5 piropos ridículos a tu pareja sin reírte.",
+            "Baila como un pato 20 segundos.",
+            "Haz 10 sentadillas gritando “¡Soy el mejor!”.",
+            "Cuenta un chiste malo y finge que es el mejor del mundo.",
+            "Imita a tu pareja cuando está de mal humor.",
+            "Di “te quiero” en voz de ópera.",
+            "Haz 5 flexiones con tu pareja sentada encima (si puede).",
+            "Intenta lamer tu codo 15 segundos.",
+            "Haz un dibujo feo de tu pareja con los ojos vendados.",
+            "Di el abecedario al revés sin fallar.",
+            "Besa el pie de tu pareja (con calcetín).",
+            "Haz 10 abdominales diciendo “¡Me encanta cumplir!”.",
+            "Imita a un bebé llorando 20 segundos.",
+            "Di un cumplido en voz de robot.",
+            "Corre en el sitio 30 segundos gritando “¡Soy fuerte!”.",
+            "Haz una mueca fea 15 segundos.",
+            "Canta el himno nacional (o inventa uno).",
+            "Di “perdón” 10 veces en voz aguda.",
+            "Intenta 5 volteretas en el suelo.",
+            "Baila la Macarena 20 segundos.",
+            "Imita a un político hablando 15 segundos.",
+            "Di “te amo” en 5 tonos diferentes.",
+            "Haz 10 saltos de rana.",
+
+            // Nivel 2 – Picardía suave
+            "Besa el cuello de tu pareja 20 segundos sin parar.",
+            "Masajea los pies de tu pareja 2 minutos.",
+            "Quítate 1 prenda (superior o inferior).",
+            "Besa la mano como en película romántica antigua.",
+            "Susurra “te deseo” 3 veces al oído.",
+            "Haz un masaje en la espalda 2 minutos.",
+            "Besa la frente 3 veces despacio.",
+            "Siéntate en el regazo de tu pareja 2 minutos frotando suave.",
+            "Frota tu nariz contra la suya 2 minutos.",
+            "Besa el lóbulo de la oreja 2 minutos.",
+            "Masajea los brazos 2 minutos.",
+            "Besa la clavícula 2 minutos.",
+            "Haz un baile sensual con ropa 2 minutos.",
+            "Susurra una fantasía suave al oído.",
+            "Besa la mejilla 2 veces.",
+            "Masajea el cuero cabelludo 2 minutos.",
+            "Frota tu mejilla contra la suya 2 minutos.",
+            "Besa la muñeca 2 veces.",
+            "Haz un cumplido muy sexy sin tocar.",
+            "Besa el ombligo por encima 2 minutos.",
+            "Masajea los muslos por encima 2 minutos.",
+            "Besa la espalda por encima 2 minutos.",
+            "Frota tu cuerpo con ropa 2 minutos.",
+            "Besa la oreja susurrando “te quiero” 1 minuto.",
+            "Masajea la cintura por encima 2 minutos.",
+
+            // Nivel 3 – Caliente
+            "Quítate toda la ropa lentamente.",
+            "Masturba a tu pareja 3 minutos sin parar.",
+            "Deja que tu pareja te masturbe 3 minutos.",
+            "Besa partes íntimas directamente 2 minutos.",
+            "Frota desnudos 2 minutos fuerte.",
+            "Realiza sexo oral simulado 2 minutos.",
+            "Masturbaos mutuamente 2 minutos.",
+            "Besa todo el cuerpo desnudo 2 minutos.",
+            "Quítale toda la ropa con la boca.",
+            "Masturba hasta el orgasmo completo.",
+            "Deja que te masturben 2 minutos.",
+            "Frota sin penetración 2 minutos.",
+            "Besa el cuello mientras os tocáis 2 minutos.",
+            "Masturba en la ducha 2 minutos.",
+            "Quédate desnudo/a encima 2 minutos.",
+            "Besa partes íntimas directamente 2 minutos.",
+            "Masturba con piernas en alto 2 minutos.",
+            "Frota en loto desnudos 2 minutos.",
+            "Besa mientras os masturbáis 2 minutos.",
+            "Masturba hasta acabar en la mano.",
+            "Realiza sexo oral simulado en fruta 2 minutos.",
+            "Frota contra la pared desnudos 2 minutos.",
+            "Masturbaos hasta acabar los dos.",
+            "Besa todo el torso desnudo 2 minutos.",
+            "Masturba fuerte 2 minutos sin acabar.",
+
+            // Nivel 4 – Fuego total
+            "Tengan relaciones 3 minutos en la posición que elija tu pareja.",
+            "Realiza sexo oral hasta dos orgasmos.",
+            "Tengan relaciones 3 minutos.",
+            "Hagan el amor en el suelo 3 minutos.",
+            "Realiza sexo oral + mano hasta tres orgasmos.",
+            "Tengan relaciones contra la pared 3 minutos.",
+            "Hagan el amor en la ducha 3 minutos.",
+            "Realiza sexo oral profundo hasta suplicar.",
+            "Tengan relaciones en vaquera inversa 4 minutos.",
+            "Hagan el amor en la cocina 4 minutos.",
+            "Realiza sexo oral en el sofá hasta acabar dos veces.",
+            "Tengan relaciones en misionero fuerte 4 minutos.",
+            "Deja que te realice oral hasta el límite.",
+            "Hagan el amor en el balcón 4 minutos.",
+            "Tengan relaciones en perrito fuerte 4 minutos.",
+            "Realiza sexo oral + masturbación hasta tres orgasmos.",
+            "Tengan relaciones en la bañera 4 minutos.",
+            "Hagan el amor en posición prohibida 4 minutos.",
+            "Realiza sexo oral hasta que pida parar.",
+            "Tengan relaciones donde diga ahora mismo 4 minutos.",
+            "Hagan el amor toda la noche sin parar.",
+            "Cumple cualquier deseo sexual ahora mismo.",
+            "Tengan relaciones fuerte hasta acabar los dos.",
+            "Realiza sexo oral en la cocina 4 minutos.",
+            "Hagan el amor hasta el amanecer."
+        ];
+
+        function sacarPregunta() {
+            if (preguntasUsadas.length >= 25) { subirNivel(); return; }
+            let i;
+            do { i = Math.floor(Math.random() * 25); } while (preguntasUsadas.includes(i));
+            preguntasUsadas.push(i);
+            preguntaActual = preguntas[nivelActual * 25 + i];
+            document.getElementById("pregunta").textContent = preguntaActual;
+            document.getElementById("respuestas").style.display = "none";
+            document.getElementById("castigo-options").style.display = "none";
+            document.getElementById("contador").textContent = `Preguntas respondidas: ${preguntasUsadas.length}/25`;
+            document.getElementById("turno-info").textContent = "Turno de Jugador 1";
+            document.getElementById("respuestaInput").value = "";
+            turnoJugador = 1;
+            respuestas = { jugador1: "", jugador2: "" };
+        }
+
+        function guardarRespuesta() {
+            const respuesta = document.getElementById("respuestaInput").value.trim();
+            if (!respuesta) {
+                alert("Escribe tu respuesta primero.");
+                return;
+            }
+
+            if (turnoJugador === 1) {
+                respuestas.jugador1 = respuesta;
+                document.getElementById("turno-info").textContent = "Turno de Jugador 2 – ¡No mires la pantalla!";
+                alert("¡Respuesta guardada! Ahora le toca a tu pareja (no mires).");
+            } else {
+                respuestas.jugador2 = respuesta;
+                alert("¡Respuesta guardada! Pulsa 'Revelar y comparar' para ver si coincidieron.");
+            }
+
+            document.getElementById("respuestaInput").value = "";
+            turnoJugador = turnoJugador === 1 ? 2 : 1;
+        }
+
+        function mostrarResultado() {
+            if (!respuestas.jugador1 || !respuestas.jugador2) {
+                alert("Ambos deben responder primero.");
+                return;
+            }
+
+            document.getElementById("resp1").textContent = respuestas.jugador1;
+            document.getElementById("resp2").textContent = respuestas.jugador2;
+
+            if (respuestas.jugador1.toLowerCase() === respuestas.jugador2.toLowerCase()) {
+                document.getElementById("resultado").innerHTML = "<span style='color:#00ff9d'>¡COINCIDIMOS! 🎉</span><br>Premio: beso largo, caricia donde quieras o reto suave que elijan.";
+            } else {
+                document.getElementById("resultado").innerHTML = "<span style='color:#ff0066'>¡FALLAMOS! 😈</span><br>Castigo: elige uno de los 2 retos que aparecen abajo.";
+                mostrarCastigos();
+            }
+
+            document.getElementById("respuestas").style.display = "block";
+        }
+
+        function mostrarCastigos() {
+            const inicio = nivelActual * 25;
+            let i1 = Math.floor(Math.random() * 25);
+            let i2 = Math.floor(Math.random() * 25);
+            while (i2 === i1) i2 = Math.floor(Math.random() * 25);
+
+            document.getElementById("castigo1").textContent = "Castigo 1: " + castigos[inicio + i1];
+            document.getElementById("castigo2").textContent = "Castigo 2: " + castigos[inicio + i2];
+            document.getElementById("castigo-options").style.display = "block";
+        }
+
+        function elegirCastigo(num) {
+            const index = num === 0 ? Math.floor(Math.random() * 25) : Math.floor(Math.random() * 25);
+            const inicio = nivelActual * 25;
+            const castigo = castigos[inicio + index];
+            alert("¡Castigo elegido!\n" + castigo + "\n¡Cumple ahora mismo! 🔥");
+            document.getElementById("castigo-options").style.display = "none";
+        }
+
+        function subirNivel() {
+            if (nivelActual < 3) {
+                nivelActual++;
+                preguntasUsadas = [];
+                respuestas = { jugador1: "", jugador2: "" };
+                document.getElementById("nivel").textContent = niveles[nivelActual];
+                document.getElementById("contador").textContent = "Preguntas respondidas: 0/25";
+                document.getElementById("pregunta").textContent = "Pulsa para sacar pregunta";
+                document.getElementById("respuestas").style.display = "none";
+                document.getElementById("castigo-options").style.display = "none";
+                turnoJugador = 1;
+                document.getElementById("turno-info").textContent = "Turno de Jugador 1";
+            } else {
+                document.getElementById("pregunta").textContent = "¡Quiz completado! Ahora a por más juegos 🔥";
+            }
+        }
+
+        function reiniciar() {
+            nivelActual = 0;
+            preguntasUsadas = [];
+            respuestas = { jugador1: "", jugador2: "" };
+            document.getElementById("nivel").textContent = niveles[0];
+            document.getElementById("contador").textContent = "Preguntas respondidas: 0/25";
+            document.getElementById("pregunta").textContent = "Pulsa para sacar pregunta";
+            document.getElementById("respuestas").style.display = "none";
+            document.getElementById("castigo-options").style.display = "none";
+            turnoJugador = 1;
+            document.getElementById("turno-info").textContent = "Turno de Jugador 1";
+        }
+
+        // Mostrar explicación al entrar
+        window.onload = function () {
+            document.getElementById("tutorialModal").style.display = "flex";
+        };
+
+        function closeTutorial() {
+            document.getElementById("tutorialModal").style.display = "none";
+        }
+    </script>
+</body>
+
+</html>

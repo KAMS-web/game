@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🧠 20 Preguntas Hot - Adivina mi fantasía</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        header {
+            text-align: center;
+            margin: 40px 0 40px;
+            text-shadow: 0 0 20px #ff00de;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .game-container {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 222, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .level-info {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ff00de;
+        }
+
+        .counter {
+            font-size: 1.3rem;
+            margin: 15px 0;
+            color: #00ff9d;
+            font-weight: bold;
+        }
+
+        #instruccion {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            min-height: 120px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            border: 1px dashed #ff00de;
+        }
+
+        #resultado {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 60px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: #ff00de;
+            color: #000;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #ff00de;
+        }
+
+        .win-btn {
+            background: #00ff9d;
+            color: #000;
+        }
+
+        .lose-btn {
+            background: #ff0066;
+            color: #fff;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #00ff9d;
+            color: #000;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            background: #33ffad;
+        }
+
+        footer {
+            margin-top: 60px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        .modal {
+            display: flex;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1a0033;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 40px #ff00de;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: #ff00de;
+        }
+
+        .modal h2 {
+            color: #ff00de;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .modal p {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html"><button class="back-btn">← Volver al menú</button></a>
+
+    <header>
+        <h1>🧠 20 Preguntas Hot</h1>
+        <p class="subtitle">Piensa en un acto, lugar, fetiche, juguete o fantasía… ¡tienes 20 preguntas sí/no! 😈</p>
+    </header>
+
+    <div class="game-container">
+        <p class="level-info">Nivel: <span id="nivel">1 – Besos, abrazos y masajes</span></p>
+        <p class="counter" id="contador">Preguntas hechas: 0/20</p>
+        <div id="instruccion">Pulsa "Empezar ronda" para que uno piense en algo hot y el otro adivine.</div>
+        <div id="resultado"></div>
+        <div class="buttons">
+            <button onclick="empezarRonda()">Empezar ronda / Cambiar turno</button>
+            <button class="responder-btn" onclick="responderPregunta('Sí')">SÍ</button>
+            <button class="responder-btn" onclick="responderPregunta('No')">NO</button>
+            <button class="win-btn" onclick="adivino()">¡Adiviné!</button>
+            <button class="lose-btn" onclick="meRindo()">Me rindo</button>
+            <button onclick="subirNivel()">Subir Nivel</button>
+            <button onclick="reiniciar()">Reiniciar</button>
+        </div>
+    </div>
+
+    <footer>Hecho con 🔥 para mentes curiosas y cuerpos ardientes</footer>
+
+    <!-- Modal de explicación al entrar -->
+    <div class="modal" id="tutorialModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTutorial()">×</span>
+            <h2>¿Cómo jugar a 20 Preguntas Hot?</h2>
+            <p>1. Pulsa "Empezar ronda / Cambiar turno" → uno de los dos piensa en algo relacionado con el nivel actual
+                (ej: beso en el cuello, quitar prenda, etc.). No
+                lo digas.</p>
+            <p>2. El otro hace preguntas de **sí/no** pulsando "SÍ" o "NO".</p>
+            <p>3. Si adivina → pulsa "¡Adiviné!" (premio grande si fue en menos de 10 preguntas).</p>
+            <p>4. Si se rinde o llega a 20 preguntas sin adivinar → castigo automático.</p>
+            <p>5. Cambian turnos al terminar la ronda.</p>
+            <p>¡A ver quién lee mejor la mente del otro! Pulsa la X y empieza 😈</p>
+        </div>
+    </div>
+
+    <script>
+        const niveles = [
+            "1 – Besos, abrazos y masajes",
+            "2 – Caricias con ropa y retos suaves",
+            "3 – Desnudo, masturbación y oral suave",
+            "4 – Posiciones, oral completo, grabaciones y fotos"
+        ];
+        let nivelActual = 0;
+        let preguntasHechas = 0;
+        let turnoPensador = 1; // 1 o 2
+        let adivinando = false;
+
+        // === CASTIGOS (100 – 25 por nivel) ===
+        const castigos = [
+            // Nivel 1 – Tierno y gracioso
+            "Canta una canción infantil desafinando todo lo que puedas.",
+            "Imita a un animal durante 30 segundos (la pareja elige cuál).",
+            "Di 5 piropos ridículos a tu pareja sin reírte.",
+            "Baila como un pato 20 segundos.",
+            "Haz 10 sentadillas.",
+            "Cuenta un chiste malo y finge que es el mejor del mundo.",
+            "Imita a tu pareja cuando está de mal humor.",
+            "Di “te quiero”.",
+            "Haz 5 flexiones con tu pareja sentada encima (si puede).",
+            "Intenta lamer tu codo 5 segundos.",
+            "Haz un dibujo feo de tu pareja con los ojos vendados.",
+            "Di el abecedario al revés sin fallar.",
+            "Besa el pie de tu pareja (con calcetín).",
+            "Haz 10 abdominales.",
+            "Imita a un bebé llorando 20 segundos.",
+            "Di un cumplido en voz de robot.",
+            "Corre en el sitio 30 segundos.",
+            "Haz una mueca fea 15 segundos.",
+            "Canta el himno nacional (o inventa uno).",
+            "Di “perdón” 10 veces.",
+            "Intenta 5 volteretas en el suelo.",
+            "Baila la Macarena 20 segundos.",
+            "Imita a un político hablando 15 segundos.",
+            "Di “te amo” en 5 tonos diferentes.",
+            "Haz 10 saltos de rana.",
+
+            // Nivel 2 – Picardía suave
+            "Besa el cuello de tu pareja 30 segundos sin parar.",
+            "Masajea los pies de tu pareja 1 minuto.",
+            "Quítate 1 prenda (superior o inferior).",
+            "Besa la mano como en película romántica antigua.",
+            "Susurra “te deseo” 5 veces al oído.",
+            "Haz un masaje en la espalda 2 minutos.",
+            "Besa la frente 10 veces despacio.",
+            "Siéntate en el regazo de tu pareja 1 minuto frotando suave.",
+            "Frota tu nariz contra la suya 30 segundos.",
+            "Besa el lóbulo de la oreja 30 segundos.",
+            "Masajea los brazos 1 minuto.",
+            "Besa la clavícula 30 segundos.",
+            "Haz un baile sensual con ropa 45 segundos.",
+            "Susurra una fantasía suave al oído.",
+            "Besa la mejilla 10 veces.",
+            "Masajea el cuero cabelludo 1 minuto.",
+            "Frota tu mejilla contra la suya 1 minuto.",
+            "Besa la muñeca 10 veces.",
+            "Haz un cumplido muy sexy sin tocar.",
+            "Besa el ombligo por encima 30 segundos.",
+            "Masajea los muslos por encima 1 minuto.",
+            "Besa la espalda por encima 1 minuto.",
+            "Frota tu cuerpo con ropa 30 segundos.",
+            "Besa la oreja susurrando “te quiero” 30 segundos.",
+            "Masajea la cintura por encima 1 minuto.",
+
+            // Nivel 3 – Caliente
+            "Quítate toda la ropa lentamente.",
+            "Masturba a tu pareja 2 minutos sin parar.",
+            "Deja que tu pareja te masturbe 2 minutos.",
+            "Besa partes íntimas directamente 1 minutos.",
+            "Frota desnudos 2 minutos fuerte.",
+            "Realiza sexo oral simulado 2 minutos.",
+            "Masturbaos mutuamente 3 minutos.",
+            "Besa todo el cuerpo desnudo 2 minutos.",
+            "Quítale toda la ropa con la boca.",
+            "Masturba hasta el orgasmo completo.",
+            "Deja que te masturben hasta acabar.",
+            "Frota sin penetración 2 minutos.",
+            "Besa el cuello mientras os tocáis 2 minutos.",
+            "Masturba en la ducha 2 minutos.",
+            "Quédate desnudo/a encima 2 minutos.",
+            "Besa partes íntimas directamente 1 minutos.",
+            "Masturba con piernas en alto 2 minutos.",
+            "Frota en loto desnudos 2 minutos.",
+            "Besa mientras os masturbáis 2 minutos.",
+            "Masturba hasta acabar en la mano.",
+            "Realiza sexo oral simulado en fruta 1 minutos.",
+            "Frota contra la pared desnudos 2 minutos.",
+            "Masturbaos hasta acabar los dos.",
+            "Besa todo el torso desnudo 2 minutos.",
+            "Masturba fuerte 2 minutos sin acabar.",
+
+            // Nivel 4 – Fuego total
+            "Tengan relaciones 2 minutos en la posición que elija tu pareja.",
+            "Realiza sexo oral hasta dos orgasmos.",
+            "tengan relaciones en misionero 2 minutos.",
+            "Hagan el amor en el suelo 2 minutos.",
+            "Realiza sexo oral + mano hasta tres orgasmos.",
+            "Tengan relaciones contra la pared 2 minutos.",
+            "Hagan el amor en la ducha 2 minutos.",
+            "Realiza sexo oral profundo hasta suplicar.",
+            "Tengan relaciones en vaquera inversa 4 minutos.",
+            "Hagan el amor en la cocina 2 minutos.",
+            "Realiza sexo oral en el sofá hasta acabar dos veces.",
+            "Tengan relaciones en misionero fuerte 2 minutos.",
+            "Deja que te realice oral hasta el límite.",
+            "Hagan el amor en el balcón 2 minutos.",
+            "Tengan relaciones en perrito fuerte 4 minutos.",
+            "Realiza sexo oral + masturbación hasta tres orgasmos.",
+            "Tengan relaciones en la bañera 2 minutos.",
+            "Hagan el amor en posición prohibida 2 minutos.",
+            "Realiza sexo oral hasta que pida parar.",
+            "Tengan relaciones donde diga ahora mismo 2 minutos.",
+            "Hagan el amor toda la noche sin parar.",
+            "Cumple cualquier deseo sexual ahora mismo.",
+            "Tengan relaciones fuerte hasta acabar los dos.",
+            "Realiza sexo oral en la cocina 2 minutos.",
+            "Hagan el amor hasta el amanecer."
+        ];
+
+        function empezarRonda() {
+            if (adivinando) {
+                alert("¡Ronda en curso! Termina con '¡Adiviné!' o 'Me rindo' antes de cambiar turno.");
+                return;
+            }
+            turnoPensador = turnoPensador === 1 ? 2 : 1;
+            adivinando = true;
+            preguntasHechas = 0;
+            document.getElementById("contador").textContent = `Preguntas hechas: 0/20`;
+            document.getElementById("instruccion").innerHTML = `Jugador ${turnoPensador}, piensa en algo del nivel actual (no lo digas).<br>Jugador ${turnoPensador === 1 ? 2 : 1}, ¡empieza a preguntar! (sí/no solamente)`;
+            document.getElementById("resultado").textContent = "";
+        }
+
+        function responderPregunta(respuesta) {
+            if (!adivinando) {
+                alert("Primero pulsa 'Empezar ronda / Cambiar turno' y piensa en algo.");
+                return;
+            }
+
+            preguntasHechas++;
+            document.getElementById("contador").textContent = `Preguntas hechas: ${preguntasHechas}/20`;
+
+            alert(`Respuesta: ${respuesta}. ¡Sigue preguntando! (${20 - preguntasHechas} restantes)`);
+        }
+
+        function adivino() {
+            if (!adivinando) return;
+            if (preguntasHechas < 10) {
+                document.getElementById("resultado").innerHTML = `<span style='color:#00ff9d'>¡Adivinaste en menos de 10 preguntas! 🎉</span><br>Premio: el que pensó cumple un deseo sexy que elijas.`;
+            } else {
+                document.getElementById("resultado").innerHTML = `<span style='color:#00ff9d'>¡Adivinaste! (en ${preguntasHechas} preguntas)</span><br>Premio: beso largo o caricia libre.`;
+            }
+            finalizarRonda();
+        }
+
+        function meRindo() {
+            if (!adivinando) return;
+            aplicarCastigoAutomatico();
+            finalizarRonda();
+        }
+
+        function aplicarCastigoAutomatico() {
+            const inicio = nivelActual * 25;
+            const i = Math.floor(Math.random() * 25);
+            const castigo = castigos[inicio + i];
+            document.getElementById("resultado").innerHTML = `<span style='color:#ff0066'>¡Castigo automático!</span><br>${castigo}<br>¡Cumple ahora mismo! 🔥`;
+        }
+
+        function finalizarRonda() {
+            adivinando = false;
+            document.getElementById("instruccion").textContent = "¡Ronda terminada! Pulsa 'Empezar ronda / Cambiar turno' para continuar.";
+        }
+
+        function subirNivel() {
+            if (nivelActual < 3) {
+                nivelActual++;
+                preguntasHechas = 0;
+                adivinando = false;
+                document.getElementById("nivel").textContent = niveles[nivelActual];
+                document.getElementById("contador").textContent = "Preguntas hechas: 0/20";
+                document.getElementById("instruccion").textContent = "Pulsa 'Empezar ronda' para que uno piense en algo hot y el otro adivine.";
+                document.getElementById("resultado").textContent = "";
+            } else {
+                document.getElementById("instruccion").textContent = "¡20 Preguntas Hot completado! ¡Todos los juegos listos! 🔥";
+            }
+        }
+
+        function reiniciar() {
+            nivelActual = 0;
+            preguntasHechas = 0;
+            adivinando = false;
+            turnoPensador = 1;
+            document.getElementById("nivel").textContent = niveles[0];
+            document.getElementById("contador").textContent = "Preguntas hechas: 0/20";
+            document.getElementById("instruccion").textContent = "Pulsa 'Empezar ronda' para que uno piense en algo hot y el otro adivine.";
+            document.getElementById("resultado").textContent = "";
+        }
+
+        // Mostrar explicación al entrar
+        window.onload = function () {
+            document.getElementById("tutorialModal").style.display = "flex";
+        };
+
+        function closeTutorial() {
+            document.getElementById("tutorialModal").style.display = "none";
+        }
+    </script>
+</body>
+
+</html>

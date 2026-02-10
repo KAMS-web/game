@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🙅‍♀️ Nunca Nunca Hot - Yo Nunca...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        header {
+            text-align: center;
+            margin: 40px 0 40px;
+            text-shadow: 0 0 20px #ff0066;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .game-container {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 102, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .level-info {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ff0066;
+        }
+
+        .counter {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        #afirmacion {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            min-height: 120px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            border: 1px dashed #ff0066;
+        }
+
+        #turno-info {
+            font-size: 1.4rem;
+            margin: 20px 0;
+            color: #ff00de;
+            font-weight: bold;
+        }
+
+        #respuestas {
+            margin: 20px 0;
+            font-size: 1.3rem;
+            display: none;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: #ff0066;
+            color: #fff;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #ff0066;
+        }
+
+        .reveal-btn {
+            background: #ff4757;
+            color: #fff;
+            display: none;
+        }
+
+        .castigo-options {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .castigo-options button {
+            background: #ff0066;
+            margin: 10px;
+            padding: 12px 25px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #00ff9d;
+            color: #000;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            background: #33ffad;
+        }
+
+        footer {
+            margin-top: 60px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        .modal {
+            display: flex;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1a0033;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 40px #ff0066;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: #ff0066;
+        }
+
+        .modal h2 {
+            color: #ff0066;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .modal p {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html"><button class="back-btn">← Volver al menú</button></a>
+
+    <header>
+        <h1>🙅‍♀️ Nunca Nunca</h1>
+        <p class="subtitle">Yo nunca he… Si lo has hecho, reto. Si no, castigo. ¡Confiesa! 😈</p>
+    </header>
+
+    <div class="game-container">
+        <p class="level-info">Nivel: <span id="nivel">1 - Cosas inocentes</span></p>
+        <p class="counter" id="contador">Afirmaciones jugadas: 0/25</p>
+        <div id="turno-info">Turno de Jugador 1</div>
+        <div id="afirmacion">Pulsa para sacar afirmación</div>
+        <div id="respuestas">
+            <p><strong>Tú:</strong> <span id="tuResp">-</span></p>
+            <p><strong>Tu pareja:</strong> <span id="parejaResp">-</span></p>
+            <p id="resultado" style="font-size:1.5rem;font-weight:bold;margin-top:20px;"></p>
+            <div id="castigoOptions" class="castigo-options">
+                <p style="font-size:1.3rem;margin-bottom:15px;">¡Castigo! Elige uno de los 2:</p>
+                <button id="castigo1" onclick="elegirCastigo(0)"></button>
+                <button id="castigo2" onclick="elegirCastigo(1)"></button>
+            </div>
+        </div>
+        <div class="buttons">
+            <button onclick="sacarAfirmacion()">Sacar Afirmación</button>
+            <button onclick="responder('Sí')">Yo SÍ</button>
+            <button onclick="responder('No')">Yo NO</button>
+            <button id="revelarBtn" class="reveal-btn" onclick="mostrarResultado()">Revelar y comparar</button>
+            <button onclick="subirNivel()">Subir Nivel</button>
+            <button onclick="reiniciar()">Reiniciar</button>
+        </div>
+    </div>
+
+    <footer>Hecho con 🔥 para parejas sin secretos</footer>
+
+    <!-- Modal de explicación al entrar -->
+    <div class="modal" id="tutorialModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTutorial()">×</span>
+            <h2>¿Cómo jugar a Nunca Nunca Hot?</h2>
+            <p>1. Pulsa "Sacar Afirmación" para obtener una frase "Yo nunca he…".</p>
+            <p>2. Cada uno responde "Yo SÍ" o "Yo NO" (si lo ha hecho o no).</p>
+            <p>3. Cuando ambos hayan respondido, pulsa "Revelar y comparar".</p>
+            <p>4. Si uno sí y el otro no → el que sí cumple un reto.</p>
+            <p>5. Si los dos sí → premio mutuo (beso largo + caricia).</p>
+            <p>6. Si los dos no → castigo (elige uno de los 2 que aparecen).</p>
+            <p>Hay 4 niveles que suben de inocente a extremo.</p>
+            <p>¡Sin mentiras! Pulsa la X y empieza a confesar 😈</p>
+        </div>
+    </div>
+
+    <script>
+        const niveles = [
+            "1 - Cosas inocentes",
+            "2 - Picantes leves",
+            "3 - Hot",
+            "4 - Extremo"
+        ];
+        let nivelActual = 0;
+        let afirmacionesUsadas = [];
+        let respuestas = { jugador1: "", jugador2: "" };
+        let afirmacionActual = "";
+        let turnoJugador = 1;
+
+        // === 100 AFIRMACIONES (25 por nivel) ===
+        const afirmaciones = [
+            // Nivel 1 - Inocentes
+            "Yo nunca he mentido a mis padres sobre dónde estaba.",
+            "Yo nunca he besado a alguien en público.",
+            "Yo nunca he robado algo pequeño.",
+            "Yo nunca he fingido estar enfermo para no ir al cole/trabajo.",
+            "Yo nunca he enviado un mensaje equivocado.",
+            "Yo nunca he llorado viendo una película infantil.",
+            "Yo nunca he tenido un crush secreto en un profesor/a.",
+            "Yo nunca he dormido en clase.",
+            "Yo nunca he comido algo caducado a propósito.",
+            "Yo nunca he bailado solo/a en mi habitación como loco/a.",
+            "Yo nunca he tenido un apodo vergonzoso en el colegio.",
+            "Yo nunca he mentido sobre mi edad.",
+            "Yo nunca he fingido que me gustaba un regalo.",
+            "Yo nunca he roto algo y echado la culpa a otro.",
+            "Yo nunca he tenido un peluche favorito hasta grande.",
+            "Yo nunca he cantado en la ducha pensando que nadie oía.",
+            "Yo nunca he tenido miedo a la oscuridad de adulto.",
+            "Yo nunca he jugado a la ouija.",
+            "Yo nunca he tenido un diario secreto.",
+            "Yo nunca he fingido estar dormido para evitar algo.",
+            "Yo nunca he robado comida del plato de alguien.",
+            "Yo nunca he tenido un crush en un personaje de dibujos.",
+            "Yo nunca he mentido sobre saber hacer algo.",
+            "Yo nunca he tenido un corte de pelo horrible.",
+            "Yo nunca he llorado por una serie o libro.",
+
+            // Nivel 2 - Picantes leves
+            "Yo nunca he tenido sexo en un coche.",
+            "Yo nunca he masturbado pensando en un famoso/a.",
+            "Yo nunca he besado a alguien del mismo sexo.",
+            "Yo nunca he enviado un nude.",
+            "Yo nunca he tenido sexo en la casa de mis padres con ellos cerca.",
+            "Yo nunca he usado un juguete sexual solo.",
+            "Yo nunca he fantaseado con un trío.",
+            "Yo nunca he tenido sexo en un lugar semi-público.",
+            "Yo nunca he mentido sobre cuántas personas he estado.",
+            "Yo nunca he tenido sexo en la primera cita.",
+            "Yo nunca he usado lencería sexy para sorprender.",
+            "Yo nunca he tenido un sueño erótico con alguien conocido.",
+            "Yo nunca he grabado un audio subido de tono.",
+            "Yo nunca he tenido sexo con alguien mucho mayor/menor.",
+            "Yo nunca he tenido sexo en la ducha.",
+            "Yo nunca he usado un vibrador en pareja.",
+            "Yo nunca he tenido sexo en la playa o piscina.",
+            "Yo nunca he tenido un beso borracho que no recuerdo.",
+            "Yo nunca he tenido sexo en un probador.",
+            "Yo nunca he usado un condón de sabor raro.",
+            "Yo nunca he tenido sexo en el cine.",
+            "Yo nunca he tenido un crush en el ex de un amigo/a.",
+            "Yo nunca he tenido sexo con alguien en secreto.",
+            "Yo nunca he tenido sexo en la cocina.",
+            "Yo nunca he tenido sexo en el coche en marcha.",
+
+            // Nivel 3 - Hot
+            "Yo nunca he tenido sexo oral en un lugar público.",
+            "Yo nunca he usado un juguete sexual en pareja.",
+            "Yo nunca he tenido sexo anal.",
+            "Yo nunca he grabado un vídeo teniendo sexo.",
+            "Yo nunca he tenido sexo en un baño público.",
+            "Yo nunca he tenido un trío real.",
+            "Yo nunca he tenido sexo con alguien que no conocía bien.",
+            "Yo nunca he tenido sexo en un ascensor.",
+            "Yo nunca he usado esposas o ataduras.",
+            "Yo nunca he tenido sexo con alguien mientras su pareja no sabía.",
+            "Yo nunca he tenido sexo en un coche con gente cerca.",
+            "Yo nunca he tenido sexo en la oficina.",
+            "Yo nunca he tenido sexo en un cementerio.",
+            "Yo nunca he tenido sexo en un avión o tren.",
+            "Yo nunca he tenido sexo con un desconocido/a.",
+            "Yo nunca he usado un plug anal.",
+            "Yo nunca he tenido sexo con varias personas en una noche.",
+            "Yo nunca he tenido sexo mientras veía porno.",
+            "Yo nunca he tenido sexo en un parque de noche.",
+            "Yo nunca he tenido sexo en la terraza o balcón.",
+            "Yo nunca he tenido sexo con alguien mucho mayor/menor.",
+            "Yo nunca he tenido sexo en la casa de un ex.",
+            "Yo nunca he tenido sexo en una piscina pública.",
+            "Yo nunca he tenido sexo con un amigo/a de la infancia.",
+            "Yo nunca he tenido sexo en un hotel de carretera.",
+
+            // Nivel 4 - Extremo
+            "Yo nunca he tenido sexo en un lugar con riesgo real de ser pillado.",
+            "Yo nunca he grabado un vídeo sexual completo.",
+            "Yo nunca he tenido sexo con alguien mientras su pareja estaba cerca.",
+            "Yo nunca he tenido sexo en un coche en marcha.",
+            "Yo nunca he tenido sexo en un avión o tren real.",
+            "Yo nunca he tenido sexo en un cementerio o iglesia.",
+            "Yo nunca he tenido sexo con alguien que no conocía su nombre.",
+            "Yo nunca he tenido sexo con varias personas en una noche real.",
+            "Yo nunca he tenido sexo en la oficina con compañeros cerca.",
+            "Yo nunca he usado BDSM real (ataduras, azotes fuertes).",
+            "Yo nunca he tenido sexo anal con dolor/placer extremo.",
+            "Yo nunca he tenido sexo en un lugar de trabajo.",
+            "Yo nunca he tenido sexo en una playa pública de día.",
+            "Yo nunca he tenido sexo con un desconocido/a en un bar.",
+            "Yo nunca he tenido sexo en un ascensor con gente esperando.",
+            "Yo nunca he tenido sexo con alguien que me pagó o viceversa.",
+            "Yo nunca he tenido sexo en una fiesta con gente alrededor.",
+            "Yo nunca he tenido sexo en un coche en un parking vigilado.",
+            "Yo nunca he tenido sexo en un baño de discoteca.",
+            "Yo nunca he tenido sexo en la calle o callejón.",
+            "Yo nunca he tenido sexo con alguien mientras grababa sin permiso.",
+            "Yo nunca he tenido sexo en un parque infantil de noche.",
+            "Yo nunca he tenido sexo en la casa de mis padres con ellos dentro.",
+            "Yo nunca he tenido sexo en un lugar religioso.",
+            "Yo nunca he tenido sexo con alguien que era pareja de un amigo/a."
+        ];
+
+        // === CASTIGOS (100 – 25 por nivel) ===
+        const castigos = [
+            // Nivel 1
+            "Canta una canción infantil desafinando todo lo que puedas.",
+            "Imita a un animal durante 30 segundos (la pareja elige cuál).",
+            "Di 5 piropos ridículos a tu pareja sin reírte.",
+            "Baila como un pato 20 segundos.",
+            "Haz 10 sentadillas gritando “¡Soy el mejor!”.",
+            "Cuenta un chiste malo y finge que es el mejor del mundo.",
+            "Imita a tu pareja cuando está de mal humor.",
+            "Di “te quiero” en voz de ópera.",
+            "Haz 5 flexiones con tu pareja sentada encima (si puede).",
+            "Intenta lamer tu codo 15 segundos.",
+            "Haz un dibujo feo de tu pareja con los ojos vendados.",
+            "Di el abecedario al revés sin fallar.",
+            "Besa el pie de tu pareja (con calcetín).",
+            "Haz 10 abdominales diciendo “¡Me encanta cumplir!”.",
+            "Imita a un bebé llorando 20 segundos.",
+            "Di un cumplido en voz de robot.",
+            "Corre en el sitio 30 segundos gritando “¡Soy fuerte!”.",
+            "Haz una mueca fea 15 segundos.",
+            "Canta el himno nacional (o inventa uno).",
+            "Di “perdón” 10 veces en voz aguda.",
+            "Intenta 5 volteretas en el suelo.",
+            "Baila la Macarena 20 segundos.",
+            "Imita a un político hablando 15 segundos.",
+            "Di “te amo” en 5 tonos diferentes.",
+            "Haz 10 saltos de rana.",
+
+            // Nivel 2
+            "Besa el cuello de tu pareja 20 segundos sin parar.",
+            "Masajea los pies de tu pareja 1 minutos.",
+            "Quítate 1 prenda (superior o inferior).",
+            "Besa la mano como en película romántica antigua.",
+            "Susurra “te deseo” 3 veces al oído.",
+            "Haz un masaje en la espalda 2 minutos.",
+            "Besa la frente 30 veces despacio.",
+            "Siéntate en el regazo de tu pareja 1 minutos frotando suave.",
+            "Frota tu nariz contra la suya 30 segundos.",
+            "Besa el lóbulo de la oreja 30 segundos.",
+            "Masajea los brazos 1 minutos.",
+            "Besa la clavícula 30 segundos.",
+            "Haz un baile sensual con ropa 15 segundos.",
+            "Susurra una fantasía suave al oído.",
+            "Besa la mejilla 40 veces.",
+            "Masajea el cuero cabelludo 1 minutos.",
+            "Frota tu mejilla contra la suya 1 minutos.",
+            "Besa la muñeca 20 veces.",
+            "Haz un cumplido muy sexy sin tocar.",
+            "Besa el ombligo por encima 30 segundos.",
+            "Masajea los muslos por encima 1 minutos.",
+            "Besa la espalda por encima 1 minutos.",
+            "Frota tu cuerpo con ropa 30 segundos.",
+            "Besa la oreja susurrando “te quiero” 30 segundos.",
+            "Masajea la cintura por encima 1 minutos.",
+
+            // Nivel 3
+            "Quítate toda la ropa lentamente.",
+            "Masturba a tu pareja 1 minutos sin parar.",
+            "Deja que tu pareja te masturbe 1 minutos.",
+            "Besa partes íntimas directamente 1 minutos.",
+            "Frota desnudos 2 minutos fuerte.",
+            "Realiza sexo oral simulado 1 minutos.",
+            "Masturbaos mutuamente 2 minutos.",
+            "Besa todo el cuerpo desnudo 1 minutos.",
+            "Quítale toda la ropa con la boca.",
+            "Masturba hasta el orgasmo completo.",
+            "Deja que te masturben hasta acabar.",
+            "Frota sin penetración 2 minutos.",
+            "Besa el cuello mientras os tocáis 1 minutos.",
+            "Masturba en la ducha 1 minutos.",
+            "Quédate desnudo/a encima 1 minutos.",
+            "Besa partes íntimas directamente 1 minutos.",
+            "Masturba con piernas en alto 1 minutos.",
+            "Frota en loto desnudos 2 minutos.",
+            "Besa mientras os masturbáis 1 minutos.",
+            "Masturba hasta acabar en la mano.",
+            "Realiza sexo oral simulado en fruta 1 minutos.",
+            "Frota contra la pared desnudos 1 minutos.",
+            "Masturbaos hasta acabar los dos.",
+            "Besa todo el torso desnudo 1 minutos.",
+            "Masturba fuerte 1 minutos sin acabar.",
+
+            // Nivel 4
+            "Tengan relaciones 2 minutos en la posición que elija tu pareja.",
+            "Realiza sexo oral hasta dos orgasmos.",
+            "Relaciones 2 minutos.",
+            "Hagan el amor en el suelo 2 minutos.",
+            "Realiza sexo oral + mano hasta tres orgasmos.",
+            "Tengan relaciones contra la pared 2 minutos.",
+            "Hagan el amor en la ducha 2 minutos.",
+            "Realiza sexo oral 2 minutos.",
+            "Tengan relaciones en vaquera inversa 4 minutos.",
+            "Hagan el amor en la cocina 2 minutos.",
+            "Realiza sexo oral en el sofá 2 minutos.",
+            "Tengan relaciones en misionero fuerte 2 minutos.",
+            "Deja que te realice oral 2 minutos.",
+            "Hagan el amor en el balcón 2 minutos.",
+            "Tengan relaciones en perrito 2 minutos.",
+            "Realiza sexo oral + masturbación 2 minutos.",
+            "Tengan relaciones en la bañera 2 minutos.",
+            "Hagan el amor en posición prohibida 2 minutos.",
+            "Realiza sexo oral hasta que pida parar.",
+            "Tengan relaciones donde diga ahora mismo 2 minutos.",
+            "Hagan el amor toda la noche sin parar.",
+            "Cumple cualquier deseo sexual ahora mismo.",
+            "Tengan relaciones fuerte hasta acabar los dos.",
+            "Realiza sexo oral en la cocina 2 minutos.",
+            "Hagan el amor hasta el amanecer."
+        ];
+
+        function sacarAfirmacion() {
+            if (afirmacionesUsadas.length >= 25) { subirNivel(); return; }
+            let i;
+            do { i = Math.floor(Math.random() * 25); } while (afirmacionesUsadas.includes(i));
+            afirmacionesUsadas.push(i);
+            afirmacionActual = afirmaciones[nivelActual * 25 + i];
+            document.getElementById("afirmacion").textContent = afirmacionActual;
+            document.getElementById("respuestas").style.display = "none";
+            document.getElementById("contador").textContent = `Afirmaciones jugadas: ${afirmacionesUsadas.length}/25`;
+            respuestas = { jugador1: "", jugador2: "" };
+            document.getElementById("tuResp").textContent = "-";
+            document.getElementById("parejaResp").textContent = "-";
+            document.getElementById("resultado").textContent = "";
+            document.getElementById("castigoOptions").style.display = "none";
+            document.getElementById("revelarBtn").style.display = "none";
+            turnoJugador = 1;
+            document.getElementById("turno-info").textContent = "Turno de Jugador 1";
+        }
+
+        function responder(resp) {
+            if (respuestas.jugador1 && respuestas.jugador2) {
+                alert("Ya respondieron los dos. Pulsa 'Revelar y comparar'.");
+                return;
+            }
+
+            if (turnoJugador === 1) {
+                respuestas.jugador1 = resp;
+                document.getElementById("turno-info").textContent = "Turno de Jugador 2 – ¡No mires la pantalla!";
+                alert("¡Respuesta guardada! Ahora le toca a tu pareja (no mires).");
+            } else {
+                respuestas.jugador2 = resp;
+                alert("¡Respuesta guardada! Pulsa 'Revelar y comparar' para ver el resultado.");
+                document.getElementById("revelarBtn").style.display = "inline-block";
+            }
+            turnoJugador = turnoJugador === 1 ? 2 : 1;
+        }
+
+        function mostrarResultado() {
+            if (!respuestas.jugador1 || !respuestas.jugador2) {
+                alert("Ambos deben responder primero.");
+                return;
+            }
+
+            document.getElementById("tuResp").textContent = respuestas.jugador1;
+            document.getElementById("parejaResp").textContent = respuestas.jugador2;
+
+            if (respuestas.jugador1 === respuestas.jugador2) {
+                document.getElementById("resultado").innerHTML = "<span style='color:#00ff9d'>¡Los dos lo han hecho! 🎉</span><br>Premio mutuo: beso largo + caricia donde quieran.";
+            } else if (respuestas.jugador1 === "Sí" || respuestas.jugador2 === "Sí") {
+                document.getElementById("resultado").innerHTML = "<span style='color:#ff0066'>¡Uno sí, el otro no! 😈</span><br>El que sí lo ha hecho cumple un reto. Elige uno:";
+                mostrarCastigos();
+            } else {
+                document.getElementById("resultado").innerHTML = "<span style='color:#ff0066'>¡Ninguno lo ha hecho! 😏</span><br>Castigo doble: elige un reto para cada uno.";
+                mostrarCastigos();
+            }
+
+            document.getElementById("respuestas").style.display = "block";
+            document.getElementById("revelarBtn").style.display = "none";
+        }
+
+        function mostrarCastigos() {
+            const inicio = nivelActual * 25;
+            let i1 = Math.floor(Math.random() * 25);
+            let i2 = Math.floor(Math.random() * 25);
+            while (i2 === i1) i2 = Math.floor(Math.random() * 25);
+
+            document.getElementById("castigo1").textContent = "Reto 1: " + castigos[inicio + i1];
+            document.getElementById("castigo2").textContent = "Reto 2: " + castigos[inicio + i2];
+            document.getElementById("castigoOptions").style.display = "block";
+        }
+
+        function elegirCastigo(num) {
+            const index = num === 0 ? Math.floor(Math.random() * 25) : Math.floor(Math.random() * 25);
+            const inicio = nivelActual * 25;
+            const castigo = castigos[inicio + index];
+            alert("¡Castigo elegido!\n" + castigo + "\n¡Cumple ahora mismo! 🔥");
+            document.getElementById("castigoOptions").style.display = "none";
+        }
+
+        function subirNivel() {
+            if (nivelActual < 3) {
+                nivelActual++;
+                afirmacionesUsadas = [];
+                respuestas = { jugador1: "", jugador2: "" };
+                document.getElementById("nivel").textContent = niveles[nivelActual];
+                document.getElementById("contador").textContent = "Afirmaciones jugadas: 0/25";
+                document.getElementById("afirmacion").textContent = "Pulsa para sacar afirmación";
+                document.getElementById("respuestas").style.display = "none";
+                document.getElementById("castigoOptions").style.display = "none";
+                document.getElementById("revelarBtn").style.display = "none";
+                turnoJugador = 1;
+                document.getElementById("turno-info").textContent = "Turno de Jugador 1";
+            } else {
+                document.getElementById("afirmacion").textContent = "¡Nunca Nunca completado! Ahora a por más juegos 🔥";
+            }
+        }
+
+        function reiniciar() {
+            nivelActual = 0;
+            afirmacionesUsadas = [];
+            respuestas = { jugador1: "", jugador2: "" };
+            document.getElementById("nivel").textContent = niveles[0];
+            document.getElementById("contador").textContent = "Afirmaciones jugadas: 0/25";
+            document.getElementById("afirmacion").textContent = "Pulsa para sacar afirmación";
+            document.getElementById("respuestas").style.display = "none";
+            document.getElementById("castigoOptions").style.display = "none";
+            document.getElementById("revelarBtn").style.display = "none";
+            turnoJugador = 1;
+            document.getElementById("turno-info").textContent = "Turno de Jugador 1";
+        }
+
+        // Mostrar explicación al entrar
+        window.onload = function () {
+            document.getElementById("tutorialModal").style.display = "flex";
+        };
+
+        function closeTutorial() {
+            document.getElementById("tutorialModal").style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
