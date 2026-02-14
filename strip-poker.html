@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🃏 Strip Poker - Adivina el Número</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        header {
+            text-align: center;
+            margin: 40px 0 40px;
+            text-shadow: 0 0 20px #ff4757;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .game-container {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .level-info {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ff4757;
+        }
+
+        .counter {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        #instruccion {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            min-height: 120px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            border: 1px dashed #ff4757;
+        }
+
+        #resultado {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 60px;
+        }
+
+        .input-box {
+            margin: 15px 0;
+        }
+
+        input {
+            padding: 12px;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1.1rem;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: #ff4757;
+            color: #fff;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #ff4757;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #00ff9d;
+            color: #000;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            background: #33ffad;
+        }
+
+        footer {
+            margin-top: 60px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        .modal {
+            display: flex;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1a0033;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 40px #ff4757;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: #ff4757;
+        }
+
+        .modal h2 {
+            color: #ff4757;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .modal p {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html"><button class="back-btn">← Volver al menú</button></a>
+
+    <header>
+        <h1>🃏 Strip Poker</h1>
+        <p class="subtitle">Adivina el número… el que pierda se quita algo o cumple un reto 😈</p>
+    </header>
+
+    <div class="game-container">
+        <p class="level-info">Nivel: <span id="nivel">1 – Besos, abrazos y caricias</span></p>
+        <p class="counter" id="contador">Rondas jugadas: 0/15</p>
+        <div id="instruccion">Pulsa "Empezar ronda" para generar un número aleatorio (1-100). Cada uno ingresa su número
+            y pulsa "Adivinar".</div>
+        <div id="resultado"></div>
+        <div class="input-box">
+            <input type="number" id="novioInput" placeholder="Número del novio (1-100)" min="1" max="100" />
+            <input type="number" id="noviaInput" placeholder="Número de la novia (1-100)" min="1" max="100" />
+        </div>
+        <div class="buttons">
+            <button onclick="empezarRonda()">Empezar ronda</button>
+            <button onclick="adivinarNumero()">Adivinar</button>
+            <button onclick="subirNivel()">Subir Nivel (manual)</button>
+            <button onclick="reiniciar()">Reiniciar</button>
+        </div>
+    </div>
+
+    <footer>Hecho con 🔥 para parejas que apuestan todo</footer>
+
+    <!-- Modal de explicación al entrar -->
+    <div class="modal" id="tutorialModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTutorial()">×</span>
+            <h2>¿Cómo jugar a Strip Poker - Adivina el Número?</h2>
+            <p>1. Pulsa "Empezar ronda" para generar un número aleatorio secreto (1-100).</p>
+            <p>2. Cada uno ingresa su número (novio y novia).</p>
+            <p>3. Pulsa "Adivinar" para comparar.</p>
+            <p>4. El más cercano al número gana. El más alejado pierde y cumple un reto.</p>
+            <p>5. Retos diferenciados: si pierde el novio → reto para él. Si pierde la novia → reto para ella.</p>
+            <p>Hay 4 niveles que suben de intensidad:</p>
+            <p>Después de 15 rondas por nivel sube automáticamente (o pulsa manualmente). ¡Que gane el mejor! Pulsa la X
+                y empieza 😈</p>
+        </div>
+    </div>
+
+    <script>
+        const niveles = [
+            "1 – Besos, abrazos y caricias",
+            "2 – Besos intensos, prendas exteriores y retos inocentes",
+            "3 – Ropa interior, masturbación ligera, desnudos",
+            "4 – Todo desnudos, oral, fotos, grabaciones y posiciones"
+        ];
+        let nivelActual = 0;
+        let rondasJugadas = 0;
+        let numeroAleatorio = 0;
+
+        // RETOS SI PIERDE EL NOVIO (exactamente como los mandaste, 100 elementos)
+        const retosNovio = [
+            // Nivel 1
+            "Abraza a tu novia 1 minuto fuerte sin hablar.",
+            "Bésala la frente 3 veces muy despacio.",
+            "Mírala a los ojos 20 segundos sin reírte.",
+            "Dile “te quiero” susurrando al oído.",
+            "Canta 10 segundos de una canción cursi mirándola.",
+            "Hazle cosquillas suaves en la barriga 20 segundos.",
+            "Bésala la mejilla 5 veces rapidito.",
+            "Masajea sus hombros 2 minutos con ropa.",
+            "Siéntate en su regazo 20 segundos sin moverte.",
+            "Bésala la mano como si fuera realeza.",
+            "Hazle un cumplido cantado 10 segundos.",
+            "Bésala la nariz 3 veces.",
+            "Abraza por detrás 50 segundos.",
+            "Susurra al oído tu postre favorito de forma sexy.",
+            "Bésala los párpados 2 veces cada uno.",
+            "Dile un piropo que nunca le hayas dicho.",
+            "Masajea sus manos 90 segundos.",
+            "Coge su cara con las dos manos y mírala 20 segundos.",
+            "Bésala la muñeca 5 veces.",
+            "Inventa un apodo tierno y repítelo 2 veces.",
+            "Hazle cosquillas en el cuello con la nariz 15 segundos.",
+            "Bésala la clavícula por encima de la ropa 40 segundos.",
+            "Di “gracias por elegirme” y abraza fuerte 30 segundos.",
+            "Bésala el lóbulo de la oreja 15 segundos.",
+            "Mírala a los ojos y di “eres mi persona favorita.",
+
+            // Nivel 2
+            "Besa su boca 1 minuto suave y profundo.",
+            "Besa su cuello 90 segundos sin usar manos.",
+            "Masajea sus muslos por encima del pantalón 2 minutos.",
+            "Besa donde más te guste 90 segundos.",
+            "Frota tu mejilla contra la suya 20 segundos.",
+            "Susurra al oído lo que te gustaría hacerle después.",
+            "Besa su pecho por encima de la ropa 90 segundos.",
+            "Masajea su espalda por encima 2 minutos.",
+            "Besa su ombligo por encima de la ropa 30 segundos.",
+            "Frota tu espalda contra su pecho 30 segundos.",
+            "Besa su columna por encima de la camiseta 30 segundos.",
+            "Masajea sus brazos despacio 2 minutos.",
+            "Besa su boca + masajea su cuello al mismo tiempo 1 minuto.",
+            "Frota tus manos por todo su torso con ropa 1 minuto.",
+            "Besa sus muslos por encima del pantalón 10 segundos cada una.",
+            "Siéntate encima y balancea las caderas 30 segundos con ropa.",
+            "Besa su boca mientras le acaricias el pelo 1 minuto.",
+            "Frota tu nariz por su cuello 30 segundos.",
+            "Masajea sus glúteos por encima 2 minutos.",
+            "Besa su oreja susurrando “te deseo” 20 segundos.",
+            "Frota tu cuerpo entero contra el suyo con ropa 1 minuto.",
+            "Besa su clavícula + masajea sus hombros 1 minuto.",
+            "Masajea su cintura por encima 2 minutos.",
+            "Besa su boca sin parar 1 minuto lento.",
+            "Frota tus piernas contra las suyas 1 minuto en la cama.",
+
+            // Nivel 3
+            "Quítate tú 1 prenda lentamente.",
+            "Quítale 1 prenda a tu pareja.",
+            "Masturba a tu pareja despacio 2 minutos mirándola a los ojos.",
+            "Deja que tu pareja te masturbe suave 2 minutos.",
+            "Quítate toda la ropa superior.",
+            "Quítale toda la ropa interior.",
+            "Masturbaos mutuamente al mismo ritmo 1 minuto.",
+            "Frota tus partes íntimas contra las suyas desnudas 1 minuto.",
+            "Masturba a tu pareja hasta que esté a punto o 2 minutos.",
+            "Deja que tu pareja te masturbe hasta que tiembles o 1 minuto.",
+            "Quítate toda la ropa que te queda.",
+            "Frota tu cuerpo desnudo contra el suyo 1 minuto.",
+            "Masturba a tu pareja con las piernas en alto 1 minuto.",
+            "Besa su boca mientras os masturbáis mutuamente 1 minuto.",
+            "Masturba a tu pareja en la ducha 1 minuto (solo manos).",
+            "Quédate desnudo/a encima 1 minuto sin moverte.",
+            "Masturba a tu pareja hasta que acabe en tu mano o 2 minutos.",
+            "Frota fuerte tus partes íntimas contra las suyas 1 minuto.",
+            "Deja que tu pareja te masturbe con las piernas en alto 1 minuto.",
+            "Besa su cuello mientras os frotáis desnudos 1 minuto.",
+            "Masturbaos mutuamente hasta que los dos estéis a punto o 2 minutos.",
+            "Frotense en posición del loto 2 minutos sin penetración.",
+            "Besa todo su cuerpo desnudo 2 minutos sin saltarte nada.",
+            "Masturba a tu pareja hasta el orgasmo lento o 2 minutos.",
+            "Deja que tu pareja te masturbe hasta el orgasmo temblando o 2 minutos.",
+
+            // Nivel 4
+            "Tengan relaciones en misionero lento y profundo 5 minutos.",
+            "Grabate mientras realizas sexo oral a tu pareja 2 minutos.",
+            "Realiza sexo oral hasta que acabe en tu boca o 1 minuto.",
+            "Tengan relaciones en perrito 5 minutos.",
+            "Tomen una foto del momento donde están teniendo relaciones (foto de la penetración).",
+            "Haz el amor en la bañera 6 minutos.",
+            "Realiza sexo oral + mano hasta el segundo orgasmo o 2 minutos.",
+            "Tengan relaciones en la silla 5 minutos.",
+            "Deja que tu pareja te realice sexo oral hasta que no puedas más o 2 minutos.",
+            "Video de 30 segundos de ella arriba (vaquera lenta).",
+            "Realiza sexo oral profundo hasta que tiemble o 2 minutos.",
+            "Tengan relaciones contra la puerta de pie 4 minutos.",
+            "Átame los ojos y sorpréndeme con lo que quieras 10 minutos.",
+            "Foto close-up de la penetración.",
+            "Foto de tu boca en sus partes íntimas durante oral.",
+            "Tengan relaciones en el sofá en la posición que elija 5 minutos.",
+            "Video de 45 segundos de penetración en perrito.",
+            "Video de sexo oral a tu pareja de 30 segundos o mas si lo desea.",
+            "Tengan relaciones en la posición del puente 5 minutos.",
+            "Foto de sus dedos dentro de ella.",
+            "Grábense 5 minutos en una posición a elección.",
+            "Haz el amor en la posición que nunca habéis hecho 2 minutos.",
+            "Tengan relaciones ahora mismo 3 minutos.",
+            "Realiza sexo oral hasta que pida que pares o 3 minutos.",
+            "Tengan relaciones durante 10 minutos."
+        ];
+
+        // RETOS SI PIERDE LA NOVIA (exactamente como los mandaste, 100 elementos)
+        const retosNovia = [
+            // Nivel 1
+            "Abraza a tu novio 1 minuto fuerte sin hablar.",
+            "Bésalo la frente 3 veces muy despacio.",
+            "Míralo a los ojos 20 segundos sin reírte.",
+            "Dile “te quiero” susurrando al oído.",
+            "Canta 10 segundos de una canción cursi mirándolo.",
+            "Hazle cosquillas suaves en la barriga 20 segundos.",
+            "Bésalo la mejilla 5 veces rapidito.",
+            "Masajea sus hombros 2 minutos con ropa.",
+            "Siéntate en su regazo 20 segundos sin moverte.",
+            "Bésalo la mano como si fuera realeza.",
+            "Hazle un cumplido cantado 10 segundos.",
+            "Bésalo la nariz 3 veces.",
+            "Abraza por detrás 50 segundos.",
+            "Susurra al oído tu postre favorito de forma sexy.",
+            "Bésalo los párpados 2 veces cada uno.",
+            "Dile un piropo que nunca le hayas dicho.",
+            "Masajea sus manos 90 segundos.",
+            "Coge su cara con las dos manos y mírala 20 segundos.",
+            "Bésalo la muñeca 5 veces.",
+            "Inventa un apodo tierno y repítelo 2 veces.",
+            "Hazle cosquillas en el cuello con la nariz 15 segundos.",
+            "Bésalo la clavícula por encima de la ropa 40 segundos.",
+            "Di “gracias por elegirme” y abraza fuerte 30 segundos.",
+            "Bésalo el lóbulo de la oreja 15 segundos.",
+            "Míralo a los ojos y di “eres mi persona favorita.",
+
+            // Nivel 2
+            "Besa su boca 1 minuto suave y profundo.",
+            "Besa su cuello 90 segundos sin usar manos.",
+            "Masajea sus muslos por encima del pantalón 2 minutos.",
+            "Besa donde más te guste 90 segundos.",
+            "Frota tu mejilla contra la suya 20 segundos.",
+            "Susurra al oído lo que te gustaría hacerle después.",
+            "Besa su pecho por encima de la ropa 90 segundos.",
+            "Masajea su espalda por encima 2 minutos.",
+            "Besa su ombligo por encima de la ropa 30 segundos.",
+            "Frota tu espalda contra su pecho 30 segundos.",
+            "Besa su columna por encima de la camiseta 30 segundos.",
+            "Masajea sus brazos despacio 2 minutos.",
+            "Besa su boca + masajea su cuello al mismo tiempo 1 minuto.",
+            "Frota tus manos por todo su torso con ropa 1 minuto.",
+            "Besa sus muslos por encima del pantalón 10 segundos cada una.",
+            "Siéntate encima y balancea las caderas 30 segundos con ropa.",
+            "Besa su boca mientras le acaricias el pelo 1 minuto.",
+            "Frota tu nariz por su cuello 30 segundos.",
+            "Masajea sus glúteos por encima 2 minutos.",
+            "Besa su oreja susurrando “te deseo” 20 segundos.",
+            "Frota tu cuerpo entero contra el suyo con ropa 1 minuto.",
+            "Besa su clavícula + masajea sus hombros 1 minuto.",
+            "Masajea su cintura por encima 2 minutos.",
+            "Besa su boca sin parar 1 minuto lento.",
+            "Frota tus piernas contra las suyas 1 minuto en la cama.",
+
+            // Nivel 3
+            "Quítate tú 1 prenda lentamente.",
+            "Quítale 1 prenda a tu pareja.",
+            "Masturba a tu pareja despacio 2 minutos mirándolo a los ojos.",
+            "Deja que tu pareja te masturbe suave 2 minutos.",
+            "Quítate toda la ropa superior.",
+            "Quítale toda la ropa interior.",
+            "Masturbaos mutuamente al mismo ritmo 1 minuto.",
+            "Frota tus partes íntimas contra las suyas desnudas 1 minuto.",
+            "Masturba a tu pareja hasta que esté a punto o 2 minutos.",
+            "Deja que tu pareja te masturbe hasta que tiembles o 1 minuto.",
+            "Quítate toda la ropa que te queda.",
+            "Frota tu cuerpo desnudo contra el suyo 1 minuto.",
+            "Masturba a tu pareja con las piernas en alto 1 minuto.",
+            "Besa su boca mientras os masturbáis mutuamente 1 minuto.",
+            "Masturba a tu pareja en la ducha 1 minuto (solo manos).",
+            "Quédate desnuda encima 1 minuto sin moverte.",
+            "Masturba a tu pareja hasta que acabe en tu mano o 2 minutos.",
+            "Frota fuerte tus partes íntimas contra las suyas 1 minuto.",
+            "Deja que tu pareja te masturbe con las piernas en alto 1 minuto.",
+            "Besa su cuello mientras os frotáis desnudos 1 minuto.",
+            "Masturbaos mutuamente hasta que los dos estéis a punto o 2 minutos.",
+            "Frotense en posición del loto 2 minutos sin penetración.",
+            "Besa todo su cuerpo desnudo 2 minutos sin saltarte nada.",
+            "Masturba a tu pareja hasta el orgasmo lento o 2 minutos.",
+            "Deja que tu pareja te masturbe hasta el orgasmo temblando o 2 minutos.",
+
+            // Nivel 4
+            "Tengan relaciones en misionero lento y profundo 5 minutos.",
+            "Grabate mientras realizas sexo oral a tu pareja 2 minutos.",
+            "Realiza sexo oral hasta que acabe en tu boca o 1 minuto.",
+            "Tengan relaciones en perrito 5 minutos.",
+            "Tomen una foto del momento donde están teniendo relaciones (foto de la penetración).",
+            "Haz el amor en la bañera 6 minutos.",
+            "Realiza sexo oral + mano hasta el segundo orgasmo o 2 minutos.",
+            "Tengan relaciones en la silla 5 minutos.",
+            "Deja que tu pareja te realice sexo oral hasta que no puedas más o 2 minutos.",
+            "Video de 30 segundos de sexo lento en misionero.",
+            "Realiza sexo oral profundo hasta que tiemble o 2 minutos.",
+            "Tengan relaciones contra la puerta de pie 4 minutos.",
+            "Átame los ojos y sorpréndeme con lo que quieras 10 minutos.",
+            "Tengan relaciones en la cocina encima de la encimera 5 minutos.",
+            "Video de 30 segundos de sexo oral profundo.",
+            "Tengan relaciones en el sofá en la posición que elija 5 minutos.",
+            "Grabacion en posicion de perrito 5 minutos.",
+            "Video de sexo oral a tu pareja de 30 segundos o mas si lo desea.",
+            "Video de 45 segundos de penetración en perrito.",
+            "Realiza sexo oral + masturbación hasta acabar dos veces o 2 minutos.",
+            "Grábense 5 minutos en una posición a elección.",
+            "Haz el amor en la posición que nunca habéis hecho 2 minutos.",
+            "Tengan relaciones ahora mismo 3 minutos.",
+            "Realiza sexo oral hasta que pida que pares o 3 minutos.",
+            "Tengan relaciones durante 10 minutos."
+        ];
+
+        function empezarRonda() {
+            numeroAleatorio = Math.floor(Math.random() * 100) + 1;
+            rondasJugadas++;
+            document.getElementById("contador").textContent = `Rondas jugadas: ${rondasJugadas}/15`;
+            document.getElementById("instruccion").textContent = "Número generado (secreto: 1-100). Ingresen sus números y pulsen 'Adivinar'.";
+            document.getElementById("resultado").textContent = "";
+            document.getElementById("novioInput").value = "";
+            document.getElementById("noviaInput").value = "";
+        }
+
+        function adivinarNumero() {
+            const novio = parseInt(document.getElementById("novioInput").value);
+            const novia = parseInt(document.getElementById("noviaInput").value);
+
+            if (isNaN(novio) || isNaN(novia) || novio < 1 || novio > 100 || novia < 1 || novia > 100) {
+                alert("Ingresen números válidos entre 1 y 100.");
+                return;
+            }
+
+            const difNovio = Math.abs(numeroAleatorio - novio);
+            const difNovia = Math.abs(numeroAleatorio - novia);
+
+            let ganador = "Empate";
+            let perdedor = "Nadie pierde";
+            let reto = "Repitan ronda si quieren.";
+
+            if (difNovio < difNovia) {
+                ganador = "Novio gana";
+                perdedor = "Novia pierde";
+            } else if (difNovia < difNovio) {
+                ganador = "Novia gana";
+                perdedor = "Novio pierde";
+            }
+
+            document.getElementById("resultado").innerHTML = `Número aleatorio: ${numeroAleatorio}<br>${ganador}.<br>${perdedor} cumple un reto.`;
+
+            // Índice correcto por nivel (25 por nivel en los arrays)
+            const inicio = nivelActual * 25;
+            const i = Math.floor(Math.random() * 25);
+            let retoLista = (perdedor === "Novio pierde") ? retosNovio : retosNovia;
+
+            // Seguridad: no salirse del array
+            const indexSeguro = Math.min(inicio + i, retoLista.length - 1);
+            reto = retoLista[indexSeguro];
+
+            document.getElementById("resultado").innerHTML += `<br><strong>Reto (${niveles[nivelActual]}):</strong> ${reto}`;
+
+            // Subir nivel automáticamente
+            if (rondasJugadas >= 15) {
+                subirNivel();
+            }
+        }
+
+        function subirNivel() {
+            if (nivelActual < 3) {
+                nivelActual++;
+                rondasJugadas = 0;
+                document.getElementById("nivel").textContent = niveles[nivelActual];
+                document.getElementById("contador").textContent = `Rondas jugadas: 0/15`;
+                document.getElementById("instruccion").textContent = `¡Nivel ${nivelActual + 1} alcanzado! Los retos ahora son más intensos. Pulsa 'Empezar ronda'.`;
+                document.getElementById("resultado").innerHTML = `¡Subiste al Nivel ${nivelActual + 1}! 🔥`;
+            } else {
+                document.getElementById("instruccion").textContent = "¡Juego completado! ¡Todos los niveles superados! 🔥";
+                document.getElementById("resultado").innerHTML = "¡Felicidades! Han terminado los 4 niveles 😈";
+            }
+        }
+
+        function reiniciar() {
+            nivelActual = 0;
+            rondasJugadas = 0;
+            document.getElementById("nivel").textContent = niveles[0];
+            document.getElementById("contador").textContent = "Rondas jugadas: 0/15";
+            document.getElementById("instruccion").textContent = "Pulsa 'Empezar ronda' para generar un número aleatorio (1-100). Cada uno ingresa su número y pulsa 'Adivinar'.";
+            document.getElementById("resultado").textContent = "";
+            document.getElementById("novioInput").value = "";
+            document.getElementById("noviaInput").value = "";
+        }
+
+        // Mostrar explicación al cargar
+        window.onload = function () {
+            document.getElementById("tutorialModal").style.display = "flex";
+        };
+
+        function closeTutorial() {
+            document.getElementById("tutorialModal").style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
